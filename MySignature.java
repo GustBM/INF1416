@@ -38,7 +38,7 @@ public class MySignature {
         this.cipher.init(Cipher.ENCRYPT_MODE, privateKey);
     } 
 
-    public final void update(byte b) {
+    public final void update(byte[] b) { // TODO: O update original não é um array de bits, mas assim funciona, não sei se tá certo.
         this.messageDigest.update(b);
     }
 

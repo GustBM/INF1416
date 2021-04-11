@@ -53,12 +53,11 @@ public class MySignatureTest {
     // define um objeto signature para utilizar SHA1 e RSA
     // e assina o texto plano com a chave privada,
     // o provider utilizado tambem eh impresso
-    MySignature sig = Signature.getInstance(nameAlgorithm);
-	//Signature sig = Signature.getInstance("SHA256WithRSA");
+    MySignature sig = MySignature.getInstance(nameAlgorithm);
     sig.initSign(key.getPrivate());
     sig.update(plainText);
     byte[] signature = sig.sign();
-    System.out.println( sig.getProvider().getInfo() );
+    // System.out.println( sig.getProvider().getInfo() ); // TODO: Corrigir isso. Criar um getProvider?
     System.out.println( "\nSignature:" );
 
     // converte o signature para hexadecimal
@@ -76,12 +75,12 @@ public class MySignatureTest {
     System.out.println( "\nStart signature verification" );
     sig.initVerify(key.getPublic());
     sig.update(plainText);
-    try {
+    // try {
       if (sig.verify(signature)) {
         System.out.println( "Signature verified" );
       } else System.out.println( "Signature failed" );
-    } catch (SignatureException se) {
+    /*} catch (SignatureException se) {
       System.out.println( "Singature failed" );
-    }
+    }*/
   }
 }
