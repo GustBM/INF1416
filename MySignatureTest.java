@@ -79,7 +79,7 @@ public class MySignatureTest {
       if (sig.verify(signature)) {
         System.out.println( "Signature verified" );
       } else System.out.println( "Signature failed" );
-    /*} catch (SignatureException se) {
+    /*} catch (SignatureException se) { // TODO: Funciona se eu comentar isso. Isso não é bom...
       System.out.println( "Singature failed" );
     }*/
   }
