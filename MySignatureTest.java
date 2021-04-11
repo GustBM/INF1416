@@ -1,8 +1,16 @@
+/**
+ * INF1416 - Segurança da Informação - Trabalho 2: MySignature
+ * Prof.: Anderson Oliveira da Silva 
+ * 
+ * Gustavo Barros Marchesan - 1521500
+ * Daniela Brazão Maksoud - 2111121
+ * 
+ */
+
 import java.security.*;
 import javax.crypto.*;
-//
-// este exemplo utililiza facilidades para a geracao e verificacao
-// de assinatura digital
+import mysignature.MySignature;
+
 public class MySignatureTest {
 
   public static void main (String[] args) throws Exception {
@@ -45,7 +53,7 @@ public class MySignatureTest {
     // define um objeto signature para utilizar SHA1 e RSA
     // e assina o texto plano com a chave privada,
     // o provider utilizado tambem eh impresso
-    Signature sig = Signature.getInstance(nameAlgorithm);
+    MySignature sig = Signature.getInstance(nameAlgorithm);
 	//Signature sig = Signature.getInstance("SHA256WithRSA");
     sig.initSign(key.getPrivate());
     sig.update(plainText);
