@@ -57,7 +57,7 @@ public class MySignatureTest {
     sig.initSign(key.getPrivate());
     sig.update(plainText);
     byte[] signature = sig.sign();
-    // System.out.println( sig.getProvider().getInfo() ); // TODO: Corrigir isso. Criar um getProvider?
+    // System.out.println( sig.getProvider().getInfo() );
     System.out.println( "\nSignature:" );
 
     // converte o signature para hexadecimal
