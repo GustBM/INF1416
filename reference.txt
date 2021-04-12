@@ -1,1 +1,3 @@
 https://docs.oracle.com/javase/7/docs/api/java/security/Signature.html
+https://docs.oracle.com/javase/7/docs/api/java/security/MessageDigest.html
+https://docs.oracle.com/javase/7/docs/api/javax/crypto/Cipher.html
