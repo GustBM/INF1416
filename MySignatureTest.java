@@ -33,10 +33,10 @@ public class MySignatureTest {
           nameAlgorithm = "SHA1withRSA";
           break;
         case 3:
-          nameAlgorithm = "SHA256withRSA";
+          nameAlgorithm = "SHA-256withRSA";
           break;
         case 4:
-          nameAlgorithm = "SHA512withRSA";
+          nameAlgorithm = "SHA-512withRSA";
           break;
         default:
           System.err.println("Número do Algoritmo Inválido.");
