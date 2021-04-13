@@ -17,7 +17,7 @@ public class MySignatureTest {
   
     // Verifica args e recebe o texto plano
     if (args.length != 2) {
-      System.err.println("Usage: java MySignatureTest <text> <algorithm_number> = [1. MD5withRSA, 2. SHA1withRSA, 3. SHA-256withRSA, 4.SHA-512withRSA]");
+      System.err.println("Usage: java MySignatureTest <text> <algorithm_number> = [1. MD5withRSA, 2. SHA1withRSA, 3. SHA256withRSA, 4.SHA512withRSA]");
       System.exit(1);
     }
 
@@ -33,10 +33,10 @@ public class MySignatureTest {
           nameAlgorithm = "SHA1withRSA";
           break;
         case 3:
-          nameAlgorithm = "SHA-256withRSA";
+          nameAlgorithm = "SHA256withRSA";
           break;
         case 4:
-          nameAlgorithm = "SHA-512withRSA";
+          nameAlgorithm = "SHA512withRSA";
           break;
         default:
           System.err.println("Número do Algoritmo Inválido.");
@@ -45,6 +45,12 @@ public class MySignatureTest {
 
     System.out.println( "\nPadrão de Assinatura: ");
     System.out.println(nameAlgorithm);
+
+    // Transforma a entrada com o nome do algoritmo.
+    // SHA256 => SHA-256
+    // SHA512 = > SHA-512
+    if (nameAlgorithm.startsWith("SHA"))
+      nameAlgorithm = nameAlgorithm.substring(0, 3) + "-" + nameAlgorithm.substring(3);
     
     // Gera o par de chaves RSA.
     System.out.println( "\nStart generating RSA key..." );
