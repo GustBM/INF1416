@@ -17,7 +17,7 @@ public class MySignatureTest {
   
     // Verifica args e recebe o texto plano
     if (args.length != 2) {
-      System.err.println("Usage: java MySignatureTest <text> <algorithm_number> = [1. MD5withRSA, 2. SHA1withRSA, 3. SHA256withRSA, 4.SHA512withRSA]");
+      System.err.println("Usage: java MySignatureTest <text> <algorithm_number> = [1. MD5withRSA, 2. SHA1withRSA, 3. SHA-256withRSA, 4.SHA-512withRSA]");
       System.exit(1);
     }
 
