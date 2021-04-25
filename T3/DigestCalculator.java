@@ -24,15 +24,18 @@ public class DigestCalculator {
     private String path_pasta;
 
     private ArrayList<String> arrData = new ArrayList<String>();
+    private ArrayList<String> arrFile = new ArrayList<String>();
 
     public static DigestCalculator getInstance(String tipo_digest, String path_arq_lista, String path_pasta) throws NoSuchAlgorithmException {
         digestCalc.messageDigest = MessageDigest.getInstance(tipo_digest);
         digestCalc.path_arq_lista = path_arq_lista;
         digestCalc.path_pasta = path_pasta;
+
+        digestCalc.readFile();
+        digestCalc.setArrFile();
         return digestCalc;
     }
 
-    // C:/Users/ADM/Desktop/2021,1/INF1416/Trabalhos/T3/arquivo_teste.txt
     /*public void setPath(String ) {
         path_arq_lista = new File("");
         System.out.println(path_arq_lista.getAbsolutePath());
@@ -51,7 +54,7 @@ public class DigestCalculator {
         }
     }*/
 
-    public void readFile() {
+    private void readFile() {
         try {
         File myObj = new File(path_arq_lista);
         Scanner myReader = new Scanner(myObj);
@@ -67,6 +70,13 @@ public class DigestCalculator {
         }
     }
 
+    private void setArrFile() {
+        File folder = new File(path_pasta);
+        for(File file : folder.listFiles()) {
+            arrFile.add(File);
+        }
+    }
+
     public void writeFile(String outputFile) {
         try {
             FileWriter myWriter = new FileWriter(outputFile);
@@ -79,6 +89,7 @@ public class DigestCalculator {
         }
     }
 
+    // java DigestCalculator MD5 ./Lista_arquivos.txt ./arquivos/
     public static void main (String[] args) throws Exception {
         // Verifica args e recebe o texto plano
         if (args.length != 3) {
@@ -91,7 +102,7 @@ public class DigestCalculator {
         String Caminho_da_Pasta_dos_Arquivos = args[2];
 
         DigestCalculator digestCalc = DigestCalculator.getInstance(Tipo_Digest, Caminho_ArqListaDigest, Caminho_da_Pasta_dos_Arquivos);
-        digestCalc.readFile();
+
         System.out.println( "CODE END" );
 
     }
