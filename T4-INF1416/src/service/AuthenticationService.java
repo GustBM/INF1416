@@ -68,10 +68,7 @@ public class AuthenticationService {
     	return false;
     }
 	
-	/*public boolean checkUserPassword(String senha, User user) {
-		
-	}*/
-	
+	/*
 	public static String pwdDigest(String senha, String salt) {
         MessageDigest md = null;
         StringBuffer buf = new StringBuffer();
@@ -90,19 +87,20 @@ public class AuthenticationService {
 	    }
         
         return buf.toString();
-    }
+    }*/
 	
 	private void setUser(ResultSet rs) throws SQLException {
 		User usr = new User();
 		usr.setEmail(rs.getString("u_email"));
 		usr.setName(rs.getString("u_nome"));
 		usr.setPassword(rs.getString("u_senha"));
-		usr.setgroup(rs.getString("u_grupo"));
+		usr.setgroup(rs.getInt("u_grupo"));
 		usr.setSalt(rs.getString("u_salt"));
 		usr.setBloquedAt(rs.getDate("u_bloqueio"));
 		usr.setCertificate(rs.getString("u_certificado"));
 		usr.setTotalAccesses(rs.getInt("u_acessos"));
 		usr.setTotalReads(rs.getInt("u_leituras"));
+		dbConnect.register(2003, usr.getName(), null);
 		this.user = usr;
 	}
 	

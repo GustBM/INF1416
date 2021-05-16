@@ -5,7 +5,7 @@ import java.util.Date;
 public class User {
 	private String name;
 	private String email;
-	private String group;
+	private int group;
 	private String salt;
 	private String password;
 	private Date bloquedAt;
@@ -57,11 +57,11 @@ public class User {
 		this.name = name;
 	}
 	
-	public String getgroup() {
+	public int getgroup() {
 		return group;
 	}
 	
-	public void setgroup(String group) {
+	public void setgroup(int group) {
 		this.group = group;
 	}
 	
@@ -71,6 +71,10 @@ public class User {
 	
 	public void setTotalAccesses(int totalAccesses) {
 		this.totalAccesses = totalAccesses;
+	}
+	
+	public void addTotalAccesses() {
+		this.totalAccesses++;
 	}
 	
 	public int getTotalReads() {

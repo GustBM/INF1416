@@ -1,8 +1,12 @@
 package screen;
 import javax.swing.*;
+
+import model.User;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Date;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.regex.Pattern;
@@ -26,21 +30,26 @@ public class LoginFrame extends JFrame implements ActionListener {
     JButton loginButton = new JButton("PROXIMO");
     JButton resetButton = new JButton("LIMPAR");
     JButton restartButton = new JButton("REINICIAR");
-    JButton pwdButton1 = new JButton("1");
-    JButton pwdButton2 = new JButton("2");
-    JButton pwdButton3 = new JButton("3");
-    JButton pwdButton4 = new JButton("4");
-    JButton pwdButton5 = new JButton("5");
-    JButton pwdButton6 = new JButton("6");
-
+    JButton pwdButton1 = new JButton("BA");
+    JButton pwdButton2 = new JButton("CA");
+    JButton pwdButton3 = new JButton("DA");
+    JButton pwdButton4 = new JButton("FA");
+    JButton pwdButton5 = new JButton("GA");
+    JButton pwdButton6 = new JButton("HA");
+    
 
     public LoginFrame() {
     	dbConnect.register(2001);
+    	this.setTitle("Login Form");
+    	this.setVisible(true);
+    	this.setBounds(10, 10, 370, 400);
+    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	this.setResizable(false);
         setLayoutManager();
         setLocationAndSize();
         addComponentsToContainer();
         addActionEvent();
-        organizeFoneticButtons();
+        // organizeFoneticButtons();
     }
 
     private void setLayoutManager() {
@@ -143,23 +152,23 @@ public class LoginFrame extends JFrame implements ActionListener {
         
         if (e.getSource() == loginButton) {
             String userText;
-            // String pwdText;
             userText = userTextField.getText();
             if(!regexEmail(userText)) {
             	JOptionPane.showMessageDialog(this, "Erro! E-mail Inválido!");
+            	dbConnect.register(2005);
             	return;
             }
-            // pwdText = String.valueOf(passwordField.getPassword());
-            
-            if(!AuthenticationService.getInstance().isUserBlocked(userText)) {
-            	JOptionPane.showMessageDialog(this, "Usuário Bloqueado!");
-            	dbConnect.register(2002);
-            }
-            else if(AuthenticationService.getInstance().checkUserEmail(userText)) {
+
+            if(AuthenticationService.getInstance().checkUserEmail(userText)) {
+            	if(!AuthenticationService.getInstance().isUserBlocked(userText)) {
+                	JOptionPane.showMessageDialog(this, "Usuário Bloqueado!");
+                	dbConnect.register(2004);
+                	return;
+                }
             	dbConnect.register(2002);
                 verificationPhase2();
                 return;
-            } else {
+            }else {
                 JOptionPane.showMessageDialog(this, "Usuário Inválidos!");
                 dbConnect.register(2005);
                 return;
@@ -183,6 +192,30 @@ public class LoginFrame extends JFrame implements ActionListener {
         		JOptionPane.showMessageDialog(this, "Senha deve ter entre 3 a 6 fonemas.");
         		return;
         	}
+        	User user = AuthenticationService.getInstance().getUser();
+        	if(dbConnect.checkUserPassword(st, user)) {
+        		JOptionPane.showMessageDialog(this, "Acesso Concedido, bem-vindo " + user.getName());
+        	} else {
+        		user.addTotalAccesses();
+        		if(user.getTotalAccesses() == 1) {
+        			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 2 tentativas antes do bloqueio");
+        			dbConnect.updateUser(user);
+        			dbConnect.register(3004, user.getName(), "");
+        		}
+        		else if(user.getTotalAccesses() == 2) {
+        			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 1 tentativas antes do bloqueio");
+        			dbConnect.updateUser(user);
+        			dbConnect.register(3005, user.getName(), "");
+        		}
+        		else if(user.getTotalAccesses() >= 3) {
+        			JOptionPane.showMessageDialog(this, "Senha incorreta! Bloqueio por excesso de erros");
+        			dbConnect.register(3006, user.getName(), "");
+        			user.setBloquedAt(new Date(System.currentTimeMillis()));
+        			dbConnect.updateUser(user);
+        			dbConnect.register(3007, user.getName(), "");
+        		}		
+        	}
+
         }
         
         //Botão Fonético
@@ -198,7 +231,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         	String buttonText = bt.getText();
             passwordField.setText(st+buttonText);
             // System.out.println(String.valueOf(passwordField.getPassword()));
-            organizeFoneticButtons();
+            // organizeFoneticButtons();
         }
     }
 
