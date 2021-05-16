@@ -159,7 +159,7 @@ public class LoginFrame extends JFrame implements ActionListener {
             	return;
             }
 
-            if(AuthenticationService.getInstance().checkUserEmail(userText)) {
+            if(AuthenticationService.getInstance().checkUserEmail(userText, true)) {
             	if(!AuthenticationService.getInstance().isUserBlocked(userText)) {
                 	JOptionPane.showMessageDialog(this, "Usuário Bloqueado!");
                 	dbConnect.register(2004);
@@ -195,6 +195,8 @@ public class LoginFrame extends JFrame implements ActionListener {
         	User user = AuthenticationService.getInstance().getUser();
         	if(dbConnect.checkUserPassword(st, user)) {
         		JOptionPane.showMessageDialog(this, "Acesso Concedido, bem-vindo " + user.getName());
+        		dispose();
+        		new UserFrame();
         	} else {
         		user.addTotalAccesses();
         		if(user.getTotalAccesses() == 1) {

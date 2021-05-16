@@ -3,17 +3,21 @@ package screen;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
 
+import service.AuthenticationService;
 import service.dbConnect;
 
 public class NewUserForm extends JFrame implements ActionListener {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// Components of the Form
     private Container c;
     private JLabel title = new JLabel("Novo Usuário");
@@ -29,10 +33,12 @@ public class NewUserForm extends JFrame implements ActionListener {
     private JRadioButton nml;
     private ButtonGroup gengp;
     private JButton sub;
+    private JButton bck;
     
     private JButton[] pwdButton = new JButton[18];
 	
 	public NewUserForm() {
+		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getName(), "");
 		setTitle("Novo Usuário");
     	setVisible(true);
     	setBounds(300, 90, 500, 600);
@@ -101,9 +107,16 @@ public class NewUserForm extends JFrame implements ActionListener {
         // Submit
         sub = new JButton("Enviar");
         sub.setSize(100, 20);
-        sub.setLocation(150, 450);
+        sub.setLocation(130, 450);
         sub.addActionListener(this);
         c.add(sub);
+        
+        // Back
+        bck = new JButton("Voltar");
+        bck.setSize(100, 20);
+        bck.setLocation(260, 450);
+        bck.addActionListener(this);
+        c.add(bck);
         
         setVisible(true);
 	}
@@ -146,7 +159,13 @@ public class NewUserForm extends JFrame implements ActionListener {
         	System.out.println(String.valueOf(tsenha.getPassword()));
 		}
 		
+		if (e.getSource() == bck) {
+			dispose();
+			new UserFrame();
+		}
+		
 		if (e.getSource() == sub) {
+			dbConnect.register(6002, AuthenticationService.getInstance().getUser().getName(), "");
 			String nomeText = tname.getText();
 			String emailText = temail.getText();
 			String pwdText = String.valueOf(tsenha.getPassword());
@@ -162,6 +181,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 			
         	if(pwdText.length() > 12 || pwdText.length() < 6) {
         		JOptionPane.showMessageDialog(this, "Senha deve ter entre 3 a 6 fonemas.");
+        		dbConnect.register(6003, AuthenticationService.getInstance().getUser().getName(), "");
         		return;
         	}
 			
@@ -177,8 +197,14 @@ public class NewUserForm extends JFrame implements ActionListener {
 				return;
 			}
 			
-			if(result) JOptionPane.showMessageDialog(this, "Novo Usuário Cadastrado com Sucesso.");
-			else JOptionPane.showMessageDialog(this, "Erro no Cadastro!");
+			if(result) {
+				JOptionPane.showMessageDialog(this, "Novo Usuário Cadastrado com Sucesso.");
+				dbConnect.register(6005, AuthenticationService.getInstance().getUser().getName(), "");
+			}
+			else {
+				JOptionPane.showMessageDialog(this, "Erro no Cadastro!");
+				dbConnect.register(6006, AuthenticationService.getInstance().getUser().getName(), "");
+			}
 		    
         }
 	}

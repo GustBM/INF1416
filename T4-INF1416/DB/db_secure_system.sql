@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 14, 2021 at 10:49 PM
+-- Generation Time: May 16, 2021 at 02:31 PM
 -- Server version: 5.7.24
 -- PHP Version: 7.4.1
 
@@ -155,9 +155,9 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`u_id`, `u_email`, `u_nome`, `u_senha`, `u_grupo`, `u_salt`, `u_bloqueio`, `u_certificado`, `u_acessos`, `u_leituras`) VALUES
-(1, 'teste@gmail.com', 'Teste Testerson', '123456', 1, '', NULL, '', 0, 0),
 (3, 'block@email.com', 'Blocked Blockerson', '', 0, '', '2021-05-14', '', 0, 0),
-(4, 'admin@admin.com', 'Admin', '', 0, '', NULL, '', 0, 0);
+(4, 'admin@admin.com', 'Admin', '', 1, '', NULL, '', 0, 0),
+(6, 'asdf@gmail.com', 'asdfsadfasd', '8b9c04a8af0fc99faccbb064aaf935deaaed4db4', 0, '4bU5xO9a0g', NULL, 'teset', 0, 0);
 
 --
 -- Indexes for dumped tables
@@ -199,13 +199,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT for table `registro`
 --
 ALTER TABLE `registro`
-  MODIFY `r_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `r_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=482;
 
 --
 -- AUTO_INCREMENT for table `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

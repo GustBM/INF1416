@@ -1,6 +1,5 @@
 package service;
 
-import java.security.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +21,7 @@ public class AuthenticationService {
         return this.user;
     }
 	
-	public boolean checkUserEmail(String username) {
+	public boolean checkUserEmail(String username, boolean setUser) {
     	PreparedStatement ps;
     	ResultSet rs;
     	boolean checkUser = false;
@@ -36,7 +35,7 @@ public class AuthenticationService {
             if(rs.next())
             {
                 checkUser = true;
-                setUser(rs);
+                if(setUser) setUser(rs);
             }
     	}catch (SQLException  ex) {
     		System.out.println(ex.getMessage());

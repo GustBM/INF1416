@@ -1,17 +1,10 @@
 package service;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Random;
-
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
 
 import model.User;
 public class dbConnect {
@@ -108,7 +101,7 @@ public class dbConnect {
 	}
 
 	public static boolean newUser(String name, String email, int group, String pwd) throws Exception, SQLException {
-		boolean userCheck = AuthenticationService.getInstance().checkUserEmail(email);
+		boolean userCheck = AuthenticationService.getInstance().checkUserEmail(email, false);
 		
 		if(userCheck)
 			throw new Exception("Já existe um usuário com este e-mail.");
@@ -166,5 +159,36 @@ public class dbConnect {
     	}catch (SQLException  ex) {
     		System.out.println(ex.getMessage());
         }
+	}
+	
+	public static String[][] setLogTable() {
+		PreparedStatement ps;
+    	ResultSet rs;
+    	String query = "SELECT r_idMensagem, r_email, r_nomeArq, r_dataCriacao, m_mensagem FROM `registro`,`mensagem` WHERE r_idMensagem = m_id ORDER BY `r_dataCriacao`";
+    	int i = 0;
+    	int size = 0;
+    	try {
+    		ps = dbConnect.connectDB().prepareStatement(query,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = ps.executeQuery();
+            rs.last();
+            size = rs.getRow();
+            rs.beforeFirst();
+            
+            String[][] data = new String[size][5];
+            
+            while(rs.next()) {            	
+            	data[i][0] = rs.getString("r_idMensagem");
+            	data[i][1] = rs.getString("m_mensagem");
+            	data[i][2] = rs.getString("r_email");
+            	data[i][3] = rs.getString("r_nomeArq");
+            	data[i][4] = rs.getDate("r_dataCriacao").toString();
+            	i++;
+            }
+            return data;
+    	}catch (SQLException  ex) {
+    		System.out.println(ex.getMessage());
+        }
+    	
+    	return null;
 	}
 }
