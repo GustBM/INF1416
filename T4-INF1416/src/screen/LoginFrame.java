@@ -6,11 +6,14 @@ import model.User;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 import java.util.List;
+import java.util.Objects;
+import java.util.Date;
 
 import service.AuthenticationService;
 import service.dbConnect;
@@ -21,23 +24,25 @@ public class LoginFrame extends JFrame implements ActionListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Container container = getContentPane();
-    JLabel userLabel = new JLabel("E-MAIL");
-    JLabel passwordLabel = new JLabel("SENHA");
-    JTextField userTextField = new JTextField();
-    JPasswordField passwordField = new JPasswordField();
-    JButton nextButton = new JButton("ENVIAR");
-    JButton loginButton = new JButton("PROXIMO");
-    JButton resetButton = new JButton("LIMPAR");
-    JButton restartButton = new JButton("REINICIAR");
-    JButton pwdButton1 = new JButton("BA");
-    JButton pwdButton2 = new JButton("CA");
-    JButton pwdButton3 = new JButton("DA");
-    JButton pwdButton4 = new JButton("FA");
-    JButton pwdButton5 = new JButton("GA");
-    JButton pwdButton6 = new JButton("HA");
+	private Container container = getContentPane();
+	private JLabel userLabel = new JLabel("E-MAIL");
+	private JLabel passwordLabel = new JLabel("SENHA");
+	private JTextField userTextField = new JTextField();
+	private JPasswordField passwordField = new JPasswordField();
+	private JButton nextButton = new JButton("ENVIAR");
+	private JButton loginButton = new JButton("PROXIMO");
+	private JButton resetButton = new JButton("LIMPAR");
+	private JButton restartButton = new JButton("REINICIAR");
+	private JButton pwdButton1 = new JButton("BA");
+	private JButton pwdButton2 = new JButton("CA");
+	private JButton pwdButton3 = new JButton("DA");
+	private JButton pwdButton4 = new JButton("FA");
+	private JButton pwdButton5 = new JButton("GA");
+	private JButton pwdButton6 = new JButton("HA");
     
-
+    private int numberOfTries = 0;
+    private HashMap<String, Integer> NumUserTries = new HashMap<String, Integer>();
+    
     public LoginFrame() {
     	dbConnect.register(2001);
     	this.setTitle("Login Form");
@@ -160,7 +165,7 @@ public class LoginFrame extends JFrame implements ActionListener {
             }
 
             if(AuthenticationService.getInstance().checkUserEmail(userText, true)) {
-            	if(!AuthenticationService.getInstance().isUserBlocked(userText)) {
+            	if(AuthenticationService.getInstance().isUserBlocked(userText)) {
                 	JOptionPane.showMessageDialog(this, "Usuário Bloqueado!");
                 	dbConnect.register(2004);
                 	return;
@@ -188,33 +193,55 @@ public class LoginFrame extends JFrame implements ActionListener {
         
         if (e.getSource() == nextButton) {
         	String st = String.valueOf(passwordField.getPassword());
+        	User user = AuthenticationService.getInstance().getUser();
+        	if(AuthenticationService.getInstance().isUserBlocked(user.getEmail())) {
+            	JOptionPane.showMessageDialog(this, "Usuário Bloqueado!");
+            	dbConnect.register(2004);
+            	return;
+            }
         	if(st.length() >= 12 || st.length() < 3) {
         		JOptionPane.showMessageDialog(this, "Senha deve ter entre 3 a 6 fonemas.");
         		return;
         	}
-        	User user = AuthenticationService.getInstance().getUser();
+        	
         	if(dbConnect.checkUserPassword(st, user)) {
-        		JOptionPane.showMessageDialog(this, "Acesso Concedido, bem-vindo " + user.getName());
+        		// JOptionPane.showMessageDialog(this, "Acesso Concedido, bem-vindo " + user.getName());
+        		user.addTotalAccesses();
+        		dbConnect.register(3003, user.getName(), "");
+        		dbConnect.register(3002, user.getName(), "");
+        		dbConnect.updateUser(user);
         		dispose();
         		new UserFrame();
         	} else {
-        		user.addTotalAccesses();
-        		if(user.getTotalAccesses() == 1) {
+        		
+        		if(NumUserTries.isEmpty()) {
+        			NumUserTries.put(user.getEmail(), 0);
+        		}
+        		if(!Objects.isNull(NumUserTries.get(user.getEmail()))) {
+        			System.out.println(NumUserTries);
+        			NumUserTries.put(user.getEmail(), NumUserTries.get(user.getEmail())+1);
+        		} else {
+        			NumUserTries.put(user.getEmail(), 1);
+        		}
+        		
+        		numberOfTries = NumUserTries.get(user.getEmail());
+        		
+        		if(numberOfTries == 1) {
         			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 2 tentativas antes do bloqueio");
-        			dbConnect.updateUser(user);
         			dbConnect.register(3004, user.getName(), "");
         		}
-        		else if(user.getTotalAccesses() == 2) {
+        		else if(numberOfTries == 2) {
         			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 1 tentativas antes do bloqueio");
-        			dbConnect.updateUser(user);
         			dbConnect.register(3005, user.getName(), "");
         		}
-        		else if(user.getTotalAccesses() >= 3) {
-        			JOptionPane.showMessageDialog(this, "Senha incorreta! Bloqueio por excesso de erros");
+        		else if(numberOfTries >= 3) {
+        			JOptionPane.showMessageDialog(this, "Senha incorreta! Bloqueio de dois minutos por excesso de erros");
         			dbConnect.register(3006, user.getName(), "");
-        			user.setBloquedAt(new Date(System.currentTimeMillis()));
+        			Date date = new Date();
+        			user.setBloquedAt(new Timestamp(date.getTime()));
         			dbConnect.updateUser(user);
         			dbConnect.register(3007, user.getName(), "");
+        			dbConnect.register(3002, user.getName(), "");
         		}		
         	}
 
@@ -232,7 +259,6 @@ public class LoginFrame extends JFrame implements ActionListener {
         	if(st.length() >= 12) return;
         	String buttonText = bt.getText();
             passwordField.setText(st+buttonText);
-            // System.out.println(String.valueOf(passwordField.getPassword()));
             // organizeFoneticButtons();
         }
     }

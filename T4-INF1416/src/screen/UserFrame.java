@@ -103,7 +103,7 @@ public class UserFrame extends JFrame implements ActionListener {
 		optionButton4.setBounds(250, 310, 150, 50);
 		
 		c.add(menuTitle);
-		c.add(optionButton1);
+		if(user.getgroup() == 1) c.add(optionButton1);
 		c.add(optionButton2);
 		c.add(optionButton3);
 		c.add(optionButton4);

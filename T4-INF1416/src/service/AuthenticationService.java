@@ -1,9 +1,12 @@
 package service;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import model.User;
 
@@ -56,7 +59,10 @@ public class AuthenticationService {
             
             if(rs.next())
             {
-            	if(Objects.isNull(rs.getDate("u_bloqueio"))) {
+            	Timestamp ts= rs.getTimestamp("u_bloqueio");
+            	Date dateBlock = new Date(ts.getTime());
+            	if(Objects.isNull(dateBlock)) return false;
+            	if(getDateDiff(dateBlock, TimeUnit.MINUTES) < 2) {
             		return true;
             	}
             }
@@ -67,6 +73,11 @@ public class AuthenticationService {
     	return false;
     }
 	
+	private static long getDateDiff(Date dateBlock, TimeUnit timeUnit) {
+    	Date date1 = new Date(System.currentTimeMillis());
+        long diffInMillies = date1.getTime() - dateBlock.getTime();
+        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+    }
 	/*
 	public static String pwdDigest(String senha, String salt) {
         MessageDigest md = null;
