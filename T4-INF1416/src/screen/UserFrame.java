@@ -36,6 +36,7 @@ public class UserFrame extends JFrame implements ActionListener {
 	private JButton optionButton2 = new JButton("<html>Alterar Senha e<br />Certificado</html>");
 	private JButton optionButton3 = new JButton("Consultar Pasta");
 	private JButton optionButton4 = new JButton("Sair");
+	private JButton viewLog = new JButton("Log");
 	
 	public UserFrame() {
 		// AuthenticationService.getInstance().checkUserEmail("asdf@gmail.com", true);
@@ -101,17 +102,20 @@ public class UserFrame extends JFrame implements ActionListener {
 		optionButton2.setBounds(90, 310, 150, 50);
 		optionButton3.setBounds(250, 250, 150, 50);
 		optionButton4.setBounds(250, 310, 150, 50);
+		viewLog.setBounds(170, 400, 150, 50);
 		
 		c.add(menuTitle);
 		if(user.getgroup() == 1) c.add(optionButton1);
 		c.add(optionButton2);
 		c.add(optionButton3);
 		c.add(optionButton4);
+		if(user.getgroup() == 1) c.add(viewLog);
 		
 		optionButton1.addActionListener(this);
 		optionButton2.addActionListener(this);
 		optionButton3.addActionListener(this);
 		optionButton4.addActionListener(this);
+		viewLog.addActionListener(this);
 	}
 
 
@@ -122,6 +126,14 @@ public class UserFrame extends JFrame implements ActionListener {
 			dispose();
 			new NewUserForm();
 		}
+		if (e.getSource() == optionButton2) {
+			dbConnect.register(5003, user.getName(), "");
+			dispose();
+		}
+		if (e.getSource() == optionButton3) {
+			dbConnect.register(5004, user.getName(), "");
+			dispose();
+		}
 		if (e.getSource() == optionButton4) {
 			dbConnect.register(5005, user.getName(), "");
 			int input = JOptionPane.showConfirmDialog(null, 
@@ -130,6 +142,10 @@ public class UserFrame extends JFrame implements ActionListener {
 				dispose();
 				dbConnect.register(1002);
 			}
+		}
+		
+		if(e.getSource() == viewLog) {
+			new LogView();
 		}
 		
 	}

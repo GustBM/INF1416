@@ -78,26 +78,6 @@ public class AuthenticationService {
         long diffInMillies = date1.getTime() - dateBlock.getTime();
         return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
-	/*
-	public static String pwdDigest(String senha, String salt) {
-        MessageDigest md = null;
-        StringBuffer buf = new StringBuffer();
-        byte[] bytes;
-        try {
-            md = MessageDigest.getInstance("md");
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println("Não encontrou algoritmo sha1");
-            return null;
-        }
-        md.update((senha + salt).getBytes());
-        bytes = md.digest();
-        for(int i = 0; i < bytes.length; i++) {
-	    	String hex = Integer.toHexString(0x0100 + (bytes[i] & 0x00FF)).substring(1);
-	    	buf.append((hex.length() < 2 ? "0" : "") + hex);
-	    }
-        
-        return buf.toString();
-    }*/
 	
 	private void setUser(ResultSet rs) throws SQLException {
 		User usr = new User();
