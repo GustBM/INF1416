@@ -59,9 +59,9 @@ public class AuthenticationService {
             
             if(rs.next())
             {
-            	Timestamp ts= rs.getTimestamp("u_bloqueio");
+            	Timestamp ts = rs.getTimestamp("u_bloqueio");
+            	if(Objects.isNull(ts)) return false;
             	Date dateBlock = new Date(ts.getTime());
-            	if(Objects.isNull(dateBlock)) return false;
             	if(getDateDiff(dateBlock, TimeUnit.MINUTES) < 2) {
             		return true;
             	}
@@ -86,7 +86,7 @@ public class AuthenticationService {
         try {
             md = MessageDigest.getInstance("md");
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("Não encontrou algoritmo sha1");
+            System.out.println("Nao encontrou algoritmo sha1");
             return null;
         }
         md.update((senha + salt).getBytes());

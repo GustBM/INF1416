@@ -23,7 +23,7 @@ public class LogView extends JFrame {
 		private User user;
 		JFrame f = new JFrame();
 		
-		// Cabeçalho
+		// Cabecalho
 		private JLabel tuserName = new JLabel("Nome: ");
 		private JLabel tuserGroup = new JLabel("Grupo: ");
 		private JLabel tuserLogin = new JLabel("Login: ");
@@ -40,7 +40,7 @@ public class LogView extends JFrame {
 	    private void setLogTable() {
 	      String data[][];
 	      data = dbConnect.setLogTable();
-		  String column[]={"Cód.","Mensagem","Usuário", "Arquivo", "Data"};         
+		  String column[]={"Cod.","Mensagem","Usuario", "Arquivo", "Data"};         
 		  JTable jt=new JTable(data,column);    
 		  jt.setBounds(30,150,200,300);
 		  JScrollPane sp=new JScrollPane(jt);    

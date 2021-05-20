@@ -12,7 +12,7 @@ public class dbConnect {
 	     
         Connection con = null;
         try {
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_secure_system", "root", "root");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:8889/db_secure_system", "root", "root");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -49,7 +49,7 @@ public class dbConnect {
         try {
             sha1 = MessageDigest.getInstance("SHA1");
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("Não encontrou algoritmo SHA1");
+            System.out.println("Nao encontrou algoritmo SHA1");
             return null;
         }
         sha1.update((pwd + salt).getBytes());
@@ -100,11 +100,11 @@ public class dbConnect {
         }
 	}
 
-	public static boolean newUser(String name, String email, int group, String pwd) throws Exception, SQLException {
+	public static boolean newUser(String name, String email, int group, String pwd, byte[] certificate_content_bytes) throws Exception, SQLException {
 		boolean userCheck = AuthenticationService.getInstance().checkUserEmail(email, false);
 		
 		if(userCheck)
-			throw new Exception("Já existe um usuário com este e-mail.");
+			throw new Exception("Ja existe um usuario com este e-mail.");
 		
 		PreparedStatement ps;
     	int rs = 0;
@@ -120,7 +120,7 @@ public class dbConnect {
     		ps.setString(3, password);
     		ps.setInt(4, group);
     		ps.setString(5, salt.toString());
-    		ps.setString(6, "teset");
+    		ps.setBytes(6, certificate_content_bytes);
     		ps.setInt(7, 0);
     		ps.setInt(8, 0);
             rs = ps.executeUpdate();

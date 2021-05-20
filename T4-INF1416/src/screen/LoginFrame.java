@@ -159,14 +159,14 @@ public class LoginFrame extends JFrame implements ActionListener {
             String userText;
             userText = userTextField.getText();
             if(!regexEmail(userText)) {
-            	JOptionPane.showMessageDialog(this, "Erro! E-mail Inválido!");
+            	JOptionPane.showMessageDialog(this, "Erro! E-mail Invalido!");
             	dbConnect.register(2005);
             	return;
             }
 
             if(AuthenticationService.getInstance().checkUserEmail(userText, true)) {
             	if(AuthenticationService.getInstance().isUserBlocked(userText)) {
-                	JOptionPane.showMessageDialog(this, "Usuário Bloqueado!");
+                	JOptionPane.showMessageDialog(this, "Usuario Bloqueado!");
                 	dbConnect.register(2004);
                 	return;
                 }
@@ -174,14 +174,14 @@ public class LoginFrame extends JFrame implements ActionListener {
                 verificationPhase2();
                 return;
             }else {
-                JOptionPane.showMessageDialog(this, "Usuário Inválidos!");
+                JOptionPane.showMessageDialog(this, "Usuario Invalido!");
                 dbConnect.register(2005);
                 return;
             }
 
         }
         
-        // Botão reset
+        // Botao reset
         if (e.getSource() == resetButton) {
             // userTextField.setText("");
             passwordField.setText("");
@@ -195,12 +195,12 @@ public class LoginFrame extends JFrame implements ActionListener {
         	String st = String.valueOf(passwordField.getPassword());
         	User user = AuthenticationService.getInstance().getUser();
         	if(AuthenticationService.getInstance().isUserBlocked(user.getEmail())) {
-            	JOptionPane.showMessageDialog(this, "Usuário Bloqueado!");
+            	JOptionPane.showMessageDialog(this, "Usuario Bloqueado!");
             	dbConnect.register(2004);
             	return;
             }
-        	if(st.length() >= 12 || st.length() < 3) {
-        		JOptionPane.showMessageDialog(this, "Senha deve ter entre 3 a 6 fonemas.");
+        	if(st.length() > 12 || st.length() < 8) {
+        		JOptionPane.showMessageDialog(this, "Senha deve ter de 4 a 6 fonemas.");
         		return;
         	}
         	
@@ -227,15 +227,15 @@ public class LoginFrame extends JFrame implements ActionListener {
         		numberOfTries = NumUserTries.get(user.getEmail());
         		
         		if(numberOfTries == 1) {
-        			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 2 tentativas antes do bloqueio");
+        			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 2 tentativas antes do bloqueio.");
         			dbConnect.register(3004, user.getName(), "");
         		}
         		else if(numberOfTries == 2) {
-        			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 1 tentativas antes do bloqueio");
+        			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 1 tentativa antes do bloqueio.");
         			dbConnect.register(3005, user.getName(), "");
         		}
         		else if(numberOfTries >= 3) {
-        			JOptionPane.showMessageDialog(this, "Senha incorreta! Bloqueio de dois minutos por excesso de erros");
+        			JOptionPane.showMessageDialog(this, "Senha incorreta! Bloqueio de dois minutos por excesso de erros.");
         			dbConnect.register(3006, user.getName(), "");
         			Date date = new Date();
         			user.setBloquedAt(new Timestamp(date.getTime()));
@@ -247,7 +247,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
         }
         
-        //Botão Fonético
+        // Botao Fonetico
         if (   e.getSource() == pwdButton1 
         	|| e.getSource() == pwdButton2
         	|| e.getSource() == pwdButton3
@@ -256,7 +256,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         	|| e.getSource() == pwdButton6) {
         	JButton bt = (JButton) e.getSource();
         	String st = String.valueOf(passwordField.getPassword());
-        	if(st.length() >= 12) return;
+        	if(st.length() > 12) return;
         	String buttonText = bt.getText();
             passwordField.setText(st+buttonText);
             // organizeFoneticButtons();

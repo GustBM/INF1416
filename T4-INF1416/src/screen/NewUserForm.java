@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.io.File;
+import java.nio.file.Files;
 
 import javax.swing.*;
 
@@ -20,13 +22,14 @@ public class NewUserForm extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	// Components of the Form
     private Container c;
-    private JLabel title = new JLabel("Novo Usuário");
-    private JLabel name= new JLabel("Nome");
-    private JLabel email = new JLabel("Email");
-    private JLabel senha = new JLabel("Senha");
-    private JTextField tname = new JTextField();
-    private JTextField temail = new JTextField();
-    private JPasswordField tsenha = new JPasswordField();
+    private JLabel title 			= new JLabel("Novo Usuario");
+    private JLabel name  			= new JLabel("Nome");
+    private JLabel email 			= new JLabel("Email");
+    private JLabel certificate 		= new JLabel("Certificado");
+    private JLabel senha 			= new JLabel("Senha");
+    private JTextField tname 		= new JTextField();
+    private JTextField temail 		= new JTextField();
+    private JPasswordField tsenha 	= new JPasswordField();
 
     private JLabel grupo;
     private JRadioButton adm;
@@ -34,12 +37,16 @@ public class NewUserForm extends JFrame implements ActionListener {
     private ButtonGroup gengp;
     private JButton sub;
     private JButton bck;
+    private JButton browse;
+    public JFileChooser fc;
+    public String certificate_content_text;
+    public byte[] certificate_content_bytes;
     
     private JButton[] pwdButton = new JButton[18];
 	
 	public NewUserForm() {
 		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getName(), "");
-		setTitle("Novo Usuário");
+		setTitle("Novo Usuario");
     	setVisible(true);
     	setBounds(300, 90, 500, 600);
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,40 +59,51 @@ public class NewUserForm extends JFrame implements ActionListener {
         title.setLocation(200, 30);
         c.add(title);
         
-        // Nome
-        name.setSize(100, 20);
-        name.setLocation(100, 100);
-        c.add(name);
+//        // Nome
+//        name.setSize(100, 20);
+//        name.setLocation(100, 100);
+//        c.add(name);
+//        
+//        tname.setSize(190, 20);
+//        tname.setLocation(200, 100);
+//        c.add(tname);
+//        
+//        // Email
+//        email.setSize(100, 20);
+//        email.setLocation(100, 150);
+//        c.add(email);
+//        
+//        temail.setSize(190, 20);
+//        temail.setLocation(200, 150);
+//        c.add(temail);
         
-        tname.setSize(190, 20);
-        tname.setLocation(200, 100);
-        c.add(tname);
+        // Certificado   
+        certificate.setSize(100, 20);
+        certificate.setLocation(100, 100);
+        c.add(certificate);
         
-        // email
-        email.setSize(100, 20);
-        email.setLocation(100, 150);
-        c.add(email);
-        
-        temail.setSize(190, 20);
-        temail.setLocation(200, 150);
-        c.add(temail);
+        browse = new JButton("Procurar...");
+        browse.setSize(190, 20);
+        browse.setLocation(200, 100);
+        browse.addActionListener(this);
+        c.add(browse);
         
         // Grupo
         grupo = new JLabel("Grupo");
         grupo.setSize(100, 20);
-        grupo.setLocation(100, 200);
+        grupo.setLocation(100, 150);
         c.add(grupo);
   
         adm = new JRadioButton("Administrador");
         adm.setSelected(false);
         adm.setSize(120, 20);
-        adm.setLocation(200, 200);
+        adm.setLocation(200, 150);
         c.add(adm);
   
         nml = new JRadioButton("Normal");
         nml.setSelected(true);
         nml.setSize(100, 20);
-        nml.setLocation(320, 200);
+        nml.setLocation(320, 150);
         c.add(nml);
   
         gengp = new ButtonGroup();
@@ -94,11 +112,11 @@ public class NewUserForm extends JFrame implements ActionListener {
         
         // Senha
         senha.setSize(100, 20);
-        senha.setLocation(100, 250);
+        senha.setLocation(100, 200);
         c.add(senha);
         
-        tsenha.setSize(150, 20);
-        tsenha.setLocation(200, 250);
+        tsenha.setSize(200, 20);
+        tsenha.setLocation(200, 200);
         tsenha.setEditable(false);
         c.add(tsenha);
         
@@ -107,17 +125,17 @@ public class NewUserForm extends JFrame implements ActionListener {
         // Submit
         sub = new JButton("Enviar");
         sub.setSize(100, 20);
-        sub.setLocation(130, 450);
+        sub.setLocation(130, 500);
         sub.addActionListener(this);
         c.add(sub);
         
         // Back
         bck = new JButton("Voltar");
         bck.setSize(100, 20);
-        bck.setLocation(260, 450);
+        bck.setLocation(260, 500);
         bck.addActionListener(this);
         c.add(bck);
-        
+
         setVisible(true);
 	}
 	
@@ -136,9 +154,9 @@ public class NewUserForm extends JFrame implements ActionListener {
 			pwdButton[i] = new JButton(" ");
 			pwdButton[i].setText(intList.get(i));
 			pwdButton[i].addActionListener(this);
-			pwdButton[i].setBounds(80+60*(i-ajustex), 300+ajustey, 60, 30);
+			pwdButton[i].setBounds(80+60*(i-ajustex), 250+ajustey, 60, 30);
 			c.add(pwdButton[i]);
-			if(i==5) { ajustex = 6; ajustey = 30;}
+			if(i==5) {ajustex = 6; ajustey = 30;}
 			if(i==11) {ajustex = 12; ajustey = 60;}
 		}
 	}
@@ -153,7 +171,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 		) {
 			JButton bt = (JButton) e.getSource();
         	String st = String.valueOf(tsenha.getPassword());
-        	if(st.length() >= 12) return;
+        	if(st.length() > 12) return;
         	String buttonText = bt.getText();
         	tsenha.setText(st+buttonText);
         	System.out.println(String.valueOf(tsenha.getPassword()));
@@ -166,39 +184,51 @@ public class NewUserForm extends JFrame implements ActionListener {
 		
 		if (e.getSource() == sub) {
 			dbConnect.register(6002, AuthenticationService.getInstance().getUser().getName(), "");
-			String nomeText = tname.getText();
-			String emailText = temail.getText();
+//			String nomeText = tname.getText();
+//			String emailText = temail.getText();
 			String pwdText = String.valueOf(tsenha.getPassword());
 			int group = 0;
 			boolean result = false;
 			
 			if(adm.isSelected()) group = 1;
 			
-			if(nomeText.isEmpty() || emailText.isEmpty() || pwdText.isEmpty()) {
+//			if(nomeText.isEmpty() || emailText.isEmpty() || pwdText.isEmpty()) {
+//            	JOptionPane.showMessageDialog(this, "Preencha todos os Campos!");
+//            	return;
+//            }
+			
+			if(pwdText.isEmpty() || certificate_content_text.isEmpty()) {
             	JOptionPane.showMessageDialog(this, "Preencha todos os Campos!");
             	return;
             }
 			
-        	if(pwdText.length() > 12 || pwdText.length() < 6) {
-        		JOptionPane.showMessageDialog(this, "Senha deve ter entre 3 a 6 fonemas.");
+        	if(pwdText.length() > 12 || pwdText.length() < 8) {
+        		JOptionPane.showMessageDialog(this, "Senha deve ter de 4 a 6 fonemas.");
         		dbConnect.register(6003, AuthenticationService.getInstance().getUser().getName(), "");
         		return;
         	}
 			
-			if(!regexEmail(emailText)) {
-            	JOptionPane.showMessageDialog(this, "Formato de e-mail inválido.");
-            	return;
-            }
+//			if(!regexEmail(emailText)) {
+//            	JOptionPane.showMessageDialog(this, "Formato de e-mail invalido.");
+//            	return;
+//            }
 			
-			try {
-				result = dbConnect.newUser(nomeText, emailText, group, pwdText);
+//        	try {
+//				result = dbConnect.newUser(nomeText, emailText, group, pwdText);
+//			}catch(Exception e1) {
+//				JOptionPane.showMessageDialog(this, "Erro!" + e1.getMessage());
+//				return;
+//			}
+        	
+        	try {
+				result = dbConnect.newUser("Daniela", "daniela@gmail.com", group, pwdText, certificate_content_bytes);
 			}catch(Exception e1) {
 				JOptionPane.showMessageDialog(this, "Erro!" + e1.getMessage());
 				return;
 			}
 			
 			if(result) {
-				JOptionPane.showMessageDialog(this, "Novo Usuário Cadastrado com Sucesso.");
+				JOptionPane.showMessageDialog(this, "Novo Usuario Cadastrado com Sucesso.");
 				dbConnect.register(6005, AuthenticationService.getInstance().getUser().getName(), "");
 			}
 			else {
@@ -207,5 +237,24 @@ public class NewUserForm extends JFrame implements ActionListener {
 			}
 		    
         }
+		
+		if (e.getSource() == browse) {
+			fc = new JFileChooser();
+		    int returnValue = fc.showOpenDialog(null);
+		    if (returnValue == JFileChooser.APPROVE_OPTION) 
+		    {
+			    File selectedFile = fc.getSelectedFile();
+			    System.out.println("Arquivo selecionado: "+ selectedFile.getAbsolutePath());
+			    
+			    try {
+			    	certificate_content_text = new String(Files.readAllBytes(selectedFile.toPath()));
+			    	certificate_content_bytes = Files.readAllBytes(selectedFile.toPath());
+			    	JOptionPane.showMessageDialog(this, certificate_content_text);
+			    } catch (Exception ex) {
+			    	JOptionPane.showMessageDialog(this, "Erro!" + ex.getMessage());
+					return;
+			    }
+		    }
+		}
 	}
 }
