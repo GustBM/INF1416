@@ -191,4 +191,24 @@ public class dbConnect {
     	
     	return null;
 	}
+	
+	public static int getNumberOfUsers() {
+		PreparedStatement ps;
+    	ResultSet rs;
+    	String query = "SELECT COUNT(*) AS total FROM `usuarios`";
+    	
+		try {
+    		ps = dbConnect.connectDB().prepareStatement(query,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = ps.executeQuery();
+            rs.next();
+            
+            int numberOfUsers = rs.getInt("total");
+
+            return numberOfUsers;
+    	}catch (SQLException  ex) {
+    		System.out.println(ex.getMessage());
+        }
+		
+		return 0;
+	}
 }
