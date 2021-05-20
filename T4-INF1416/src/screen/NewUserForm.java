@@ -59,10 +59,8 @@ public class NewUserForm extends JFrame implements ActionListener {
  	private JLabel usersTotal  			= new JLabel("");
     
     private JButton[] pwdButton = new JButton[18];
-    
-    private User user;
 	
-	public NewUserForm(User user) {
+	public NewUserForm() {
 		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getName(), "");
 		setTitle("Novo Usuario");
     	setVisible(true);
@@ -73,7 +71,7 @@ public class NewUserForm extends JFrame implements ActionListener {
     	c = getContentPane();
         c.setLayout(null);
         
-        setCabecalho(user);
+        setCabecalho();
         
         setCorpo1();
         
@@ -82,7 +80,7 @@ public class NewUserForm extends JFrame implements ActionListener {
         setVisible(true);
 	}
 	
-	private void setCabecalho (User user) {
+	private void setCabecalho () {
 		
 		// Login
 		tuserLogin.setSize(300, 30);
@@ -105,10 +103,10 @@ public class NewUserForm extends JFrame implements ActionListener {
 		userName.setSize(300, 30);
 		userName.setLocation(200, 70);
 		
-		userLogin.setText(user.getEmail());
-		userName.setText(user.getName());
+		userLogin.setText(AuthenticationService.getInstance().getUser().getEmail());
+		userName.setText(AuthenticationService.getInstance().getUser().getName());
 		
-		if(user.getgroup() == 1) userGroup.setText("Administrador");
+		if(AuthenticationService.getInstance().getUser().getgroup() == 1) userGroup.setText("Administrador");
 		else userGroup.setText("Usuario Normal");
         
 		c.add(tuserLogin);
@@ -308,6 +306,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 			if(result) {
 				JOptionPane.showMessageDialog(this, "Novo Usuario Cadastrado com Sucesso.");
 				dbConnect.register(6005, AuthenticationService.getInstance().getUser().getName(), "");
+				new NewUserForm();
 			}
 			else {
 				JOptionPane.showMessageDialog(this, "Erro no Cadastro!");
