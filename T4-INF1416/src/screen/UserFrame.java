@@ -129,7 +129,7 @@ public class UserFrame extends JFrame implements ActionListener {
 		if (e.getSource() == optionButton1) {
 			dbConnect.register(5002, user.getName(), "");
 			dispose();
-			new NewUserForm();
+			new NewUserForm(user);
 		}
 		if (e.getSource() == optionButton4) {
 			dbConnect.register(5005, user.getName(), "");

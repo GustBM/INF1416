@@ -16,6 +16,8 @@ import service.AuthenticationService;
 import service.CertificateUtility;
 import service.dbConnect;
 
+import model.User;
+
 public class NewUserForm extends JFrame implements ActionListener {
 	
 	/**
@@ -24,11 +26,11 @@ public class NewUserForm extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	// Components of the Form
     private Container c;
-    private JLabel title 			= new JLabel("Novo Usuario");
-    private JLabel name  			= new JLabel("Nome");
-    private JLabel email 			= new JLabel("Email");
-    private JLabel certificate 		= new JLabel("Certificado");
-    private JLabel senha 			= new JLabel("Senha");
+    private JLabel title 			= new JLabel("Formulario de Cadastro:");
+    // private JLabel name  			= new JLabel("Nome");
+    // private JLabel email 			= new JLabel("Email");
+    private JLabel certificate 		= new JLabel("Certificado:");
+    private JLabel senha 			= new JLabel("Senha pessoal:");
     private JTextField tname 		= new JTextField();
     private JTextField temail 		= new JTextField();
     private JPasswordField tsenha 	= new JPasswordField();
@@ -46,10 +48,19 @@ public class NewUserForm extends JFrame implements ActionListener {
     public byte[] certificate_content_bytes;
     public String email_certificate;
     public String name_certificate;
+
+ 	private JLabel tuserName = new JLabel("Nome: ");
+ 	private JLabel tuserGroup = new JLabel("Grupo: ");
+ 	private JLabel tuserLogin = new JLabel("Login: ");
+ 	private JLabel userName = new JLabel("");
+ 	private JLabel userGroup = new JLabel("");
+ 	private JLabel userLogin = new JLabel("");
     
     private JButton[] pwdButton = new JButton[18];
+    
+    private User user;
 	
-	public NewUserForm() {
+	public NewUserForm(User user) {
 		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getName(), "");
 		setTitle("Novo Usuario");
     	setVisible(true);
@@ -61,54 +72,56 @@ public class NewUserForm extends JFrame implements ActionListener {
         c.setLayout(null);
 
         title.setSize(300, 30);
-        title.setLocation(200, 30);
+        title.setLocation(100, 130);
         c.add(title);
         
-//        // Nome
-//        name.setSize(100, 20);
-//        name.setLocation(100, 100);
-//        c.add(name);
+        setCabecalho(user);
+        
+//      // Nome
+//      name.setSize(100, 20);
+//      name.setLocation(100, 100);
+//      c.add(name);
 //        
-//        tname.setSize(190, 20);
-//        tname.setLocation(200, 100);
-//        c.add(tname);
+//      tname.setSize(190, 20);
+//      tname.setLocation(200, 100);
+//      c.add(tname);
 //        
-//        // Email
-//        email.setSize(100, 20);
-//        email.setLocation(100, 150);
-//        c.add(email);
+//      // Email
+//      email.setSize(100, 20);
+//      email.setLocation(100, 150);
+//      c.add(email);
 //        
-//        temail.setSize(190, 20);
-//        temail.setLocation(200, 150);
-//        c.add(temail);
+//      temail.setSize(190, 20);
+//      temail.setLocation(200, 150);
+//      c.add(temail);
         
         // Certificado   
         certificate.setSize(100, 20);
-        certificate.setLocation(100, 100);
+        certificate.setLocation(100, 180);
         c.add(certificate);
         
         browse = new JButton("Procurar...");
         browse.setSize(190, 20);
-        browse.setLocation(200, 100);
+        browse.setLocation(200, 180);
         browse.addActionListener(this);
         c.add(browse);
         
         // Grupo
-        grupo = new JLabel("Grupo");
+        grupo = new JLabel("Grupo:");
         grupo.setSize(100, 20);
-        grupo.setLocation(100, 150);
+        grupo.setLocation(100, 230);
         c.add(grupo);
   
         adm = new JRadioButton("Administrador");
         adm.setSelected(false);
         adm.setSize(120, 20);
-        adm.setLocation(200, 150);
+        adm.setLocation(200, 230);
         c.add(adm);
   
         nml = new JRadioButton("Normal");
         nml.setSelected(true);
         nml.setSize(100, 20);
-        nml.setLocation(320, 150);
+        nml.setLocation(320, 230);
         c.add(nml);
   
         gengp = new ButtonGroup();
@@ -117,33 +130,70 @@ public class NewUserForm extends JFrame implements ActionListener {
         
         // Senha
         senha.setSize(100, 20);
-        senha.setLocation(100, 200);
+        senha.setLocation(100, 280);
         c.add(senha);
         
         tsenha.setSize(200, 20);
-        tsenha.setLocation(200, 200);
+        tsenha.setLocation(200, 280);
         tsenha.setEditable(false);
         c.add(tsenha);
         
         setPwdButtons();
         
         // Submit
-        sub = new JButton("Enviar");
+        sub = new JButton("Cadastrar");
         sub.setSize(100, 20);
-        sub.setLocation(130, 500);
+        sub.setLocation(130, 530);
         sub.addActionListener(this);
         c.add(sub);
         
         // Back
         bck = new JButton("Voltar");
         bck.setSize(100, 20);
-        bck.setLocation(260, 500);
+        bck.setLocation(260, 530);
         bck.addActionListener(this);
         c.add(bck);
 
         setVisible(true);
 	}
 	
+	private void setCabecalho (User user) {
+		
+		// Login
+		tuserLogin.setSize(300, 30);
+		tuserLogin.setLocation(150, 20);
+		
+		userLogin.setSize(300, 30);
+		userLogin.setLocation(200, 20);
+		
+		// Grupo
+		tuserGroup.setSize(300, 30);
+		tuserGroup.setLocation(150, 50);
+		
+		userGroup.setSize(300, 30);
+		userGroup.setLocation(200, 50);
+		
+		// Nome
+		tuserName.setSize(300, 30);
+		tuserName.setLocation(150, 80);
+		
+		userName.setSize(300, 30);
+		userName.setLocation(200, 80);
+		
+		userLogin.setText(user.getEmail());
+		userName.setText(user.getName());
+		
+		if(user.getgroup() == 1) userGroup.setText("Administrador");
+		else userGroup.setText("Usuario Normal");
+        
+		c.add(tuserLogin);
+        c.add(tuserGroup);
+        c.add(tuserName);
+        c.add(userLogin);
+        c.add(userGroup);
+        c.add(userName);
+	}
+
 	private boolean regexEmail(String email) {
     	String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
     	Pattern pattern = Pattern.compile(regex);
@@ -159,7 +209,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 			pwdButton[i] = new JButton(" ");
 			pwdButton[i].setText(intList.get(i));
 			pwdButton[i].addActionListener(this);
-			pwdButton[i].setBounds(80+60*(i-ajustex), 250+ajustey, 60, 30);
+			pwdButton[i].setBounds(80+60*(i-ajustex), 320+ajustey, 60, 30);
 			c.add(pwdButton[i]);
 			if(i==5) {ajustex = 6; ajustey = 30;}
 			if(i==11) {ajustex = 12; ajustey = 60;}
