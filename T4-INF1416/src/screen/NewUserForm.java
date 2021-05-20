@@ -292,14 +292,14 @@ public class NewUserForm extends JFrame implements ActionListener {
 //        	try {
 //				result = dbConnect.newUser(nomeText, emailText, group, pwdText);
 //			}catch(Exception e1) {
-//				JOptionPane.showMessageDialog(this, "Erro!" + e1.getMessage());
+//				JOptionPane.showMessageDialog(this, "Erro! " + e1.getMessage());
 //				return;
 //			}
         	
         	try {
 				result = dbConnect.newUser(name_certificate, email_certificate, group, pwdText, certificate_content_bytes);
 			}catch(Exception e1) {
-				JOptionPane.showMessageDialog(this, "Erro!" + e1.getMessage());
+				JOptionPane.showMessageDialog(this, "Erro! " + e1.getMessage());
 				return;
 			}
 			
@@ -328,7 +328,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 			    	certificate_content_bytes = Files.readAllBytes(selectedFile.toPath());
 			    	JOptionPane.showMessageDialog(this, certificate_content_text);
 			    } catch (Exception ex) {
-			    	JOptionPane.showMessageDialog(this, "Erro!" + ex.getMessage());
+			    	JOptionPane.showMessageDialog(this, "Erro! " + ex.getMessage());
 					return;
 			    }
 			    
@@ -339,7 +339,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 		            // JOptionPane.showMessageDialog(this, name_certificate);
 		            
 		        } catch (Exception ex) {
-		        	JOptionPane.showMessageDialog(this, "Erro!" + ex.getMessage());
+		        	JOptionPane.showMessageDialog(this, "Erro! " + ex.getMessage());
 					return;
 		        }
 		    }
