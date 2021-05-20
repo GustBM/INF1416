@@ -18,7 +18,7 @@ import service.dbConnect;
 
 import model.User;
 
-public class NewUserForm extends JFrame implements ActionListener {
+public class NewUserFormConfirm extends JFrame implements ActionListener {
 	
 	/**
 	 * 
@@ -60,7 +60,7 @@ public class NewUserForm extends JFrame implements ActionListener {
     
     private JButton[] pwdButton = new JButton[18];
 	
-	public NewUserForm() {
+	public NewUserFormConfirm(String name_certificate, String email_certificate, int group, String pwdText, byte[] certificate_content_bytes) {
 		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getEmail(), "");
 		setTitle("Novo Usuario");
     	setVisible(true);
@@ -71,50 +71,11 @@ public class NewUserForm extends JFrame implements ActionListener {
     	c = getContentPane();
         c.setLayout(null);
         
-        setCabecalho();
-        
         setCorpo1();
         
         setCorpo2();
 
         setVisible(true);
-	}
-	
-	private void setCabecalho () {
-		
-		// Login
-		tuserLogin.setSize(300, 30);
-		tuserLogin.setLocation(150, 10);
-		
-		userLogin.setSize(300, 30);
-		userLogin.setLocation(200, 10);
-		
-		// Grupo
-		tuserGroup.setSize(300, 30);
-		tuserGroup.setLocation(150, 40);
-		
-		userGroup.setSize(300, 30);
-		userGroup.setLocation(200, 40);
-		
-		// Nome
-		tuserName.setSize(300, 30);
-		tuserName.setLocation(150, 70);
-		
-		userName.setSize(300, 30);
-		userName.setLocation(200, 70);
-		
-		userLogin.setText(AuthenticationService.getInstance().getUser().getEmail());
-		userName.setText(AuthenticationService.getInstance().getUser().getName());
-		
-		if(AuthenticationService.getInstance().getUser().getgroup() == 1) userGroup.setText("Administrador");
-		else userGroup.setText("Usuario Normal");
-        
-		c.add(tuserLogin);
-        c.add(tuserGroup);
-        c.add(tuserName);
-        c.add(userLogin);
-        c.add(userGroup);
-        c.add(userName);
 	}
 
 	private void setCorpo1() {
@@ -198,8 +159,6 @@ public class NewUserForm extends JFrame implements ActionListener {
         tsenha.setEditable(false);
         c.add(tsenha);
         
-        setPwdButtons();
-        
         // Submit
         sub = new JButton("Cadastrar");
         sub.setSize(100, 20);
@@ -220,23 +179,6 @@ public class NewUserForm extends JFrame implements ActionListener {
     	Pattern pattern = Pattern.compile(regex);
     	return pattern.matcher(email).matches();
     }
-	
-	private void setPwdButtons() {
-		String[] stringArray = {"BA","CA","DA","FA","GA","HA","BE","CE","DE","FE","GE","HE","BO","CO","DO","FO","GO","HO"};
-		List<String> intList = Arrays.asList(stringArray);
-		int ajustex = 0;
-		int ajustey = 0;
-		for (int i = 0; i < 18; i++) {
-			pwdButton[i] = new JButton(" ");
-			pwdButton[i].setText(intList.get(i));
-			pwdButton[i].addActionListener(this);
-			pwdButton[i].setBounds(80+60*(i-ajustex), 320+ajustey, 60, 30);
-			c.add(pwdButton[i]);
-			if(i==5) {ajustex = 6; ajustey = 30;}
-			if(i==11) {ajustex = 12; ajustey = 60;}
-		}
-	}
-	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -296,24 +238,21 @@ public class NewUserForm extends JFrame implements ActionListener {
 //				return;
 //			}
         	
-//        	try {
-//				result = dbConnect.newUser(name_certificate, email_certificate, group, pwdText, certificate_content_bytes);
-//			}catch(Exception e1) {
-//				JOptionPane.showMessageDialog(this, "Erro! " + e1.getMessage());
-//				return;
-//			}
-        	
-        	new NewUserFormConfirm(name_certificate, email_certificate, group, pwdText, certificate_content_bytes);
+        	try {
+				result = dbConnect.newUser(name_certificate, email_certificate, group, pwdText, certificate_content_bytes);
+			}catch(Exception e1) {
+				JOptionPane.showMessageDialog(this, "Erro! " + e1.getMessage());
+				return;
+			}
 			
-//			if(result) {
-//				// JOptionPane.showMessageDialog(this, "Novo Usuario Cadastrado com Sucesso.");
-//				// dbConnect.register(6005, AuthenticationService.getInstance().getUser().getEmail(), "");
-//				// new NewUserForm();
-//			}
-//			else {
-//				JOptionPane.showMessageDialog(this, "Erro no Cadastro!");
-//				dbConnect.register(6006, AuthenticationService.getInstance().getUser().getEmail(), "");
-//			}
+			if(result) {
+				JOptionPane.showMessageDialog(this, "Novo Usuario Cadastrado com Sucesso.");
+				dbConnect.register(6005, AuthenticationService.getInstance().getUser().getEmail(), "");
+			}
+			else {
+				JOptionPane.showMessageDialog(this, "Erro no Cadastro!");
+				dbConnect.register(6006, AuthenticationService.getInstance().getUser().getEmail(), "");
+			}
 		    
         }
 		
