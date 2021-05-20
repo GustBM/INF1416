@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.File;
 import java.nio.file.Files;
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import javax.swing.*;
 
 import service.AuthenticationService;
+import service.CertificateUtility;
 import service.dbConnect;
 
 public class NewUserForm extends JFrame implements ActionListener {
@@ -38,9 +40,12 @@ public class NewUserForm extends JFrame implements ActionListener {
     private JButton sub;
     private JButton bck;
     private JButton browse;
+    
     public JFileChooser fc;
     public String certificate_content_text;
     public byte[] certificate_content_bytes;
+    public String email_certificate;
+    public String name_certificate;
     
     private JButton[] pwdButton = new JButton[18];
 	
@@ -221,7 +226,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 //			}
         	
         	try {
-				result = dbConnect.newUser("Daniela", "daniela@gmail.com", group, pwdText, certificate_content_bytes);
+				result = dbConnect.newUser(name_certificate, email_certificate, group, pwdText, certificate_content_bytes);
 			}catch(Exception e1) {
 				JOptionPane.showMessageDialog(this, "Erro!" + e1.getMessage());
 				return;
@@ -254,6 +259,17 @@ public class NewUserForm extends JFrame implements ActionListener {
 			    	JOptionPane.showMessageDialog(this, "Erro!" + ex.getMessage());
 					return;
 			    }
+			    
+			    try {
+		            email_certificate = CertificateUtility.getCertificateEMAILADDRESS(certificate_content_bytes);
+		            name_certificate = CertificateUtility.getCertificateNAME(certificate_content_bytes);
+		            // JOptionPane.showMessageDialog(this, email_certificate);
+		            // JOptionPane.showMessageDialog(this, name_certificate);
+		            
+		        } catch (Exception ex) {
+		        	JOptionPane.showMessageDialog(this, "Erro!" + ex.getMessage());
+					return;
+		        }
 		    }
 		}
 	}
