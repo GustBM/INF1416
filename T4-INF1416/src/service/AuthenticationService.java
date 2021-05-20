@@ -110,7 +110,7 @@ public class AuthenticationService {
 		usr.setCertificate(rs.getString("u_certificado"));
 		usr.setTotalAccesses(rs.getInt("u_acessos"));
 		usr.setTotalReads(rs.getInt("u_leituras"));
-		dbConnect.register(2003, usr.getName(), null);
+		dbConnect.register(2003, usr.getEmail(), null);
 		this.user = usr;
 	}
 	

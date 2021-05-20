@@ -61,7 +61,7 @@ public class NewUserForm extends JFrame implements ActionListener {
     private JButton[] pwdButton = new JButton[18];
 	
 	public NewUserForm() {
-		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getName(), "");
+		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getEmail(), "");
 		setTitle("Novo Usuario");
     	setVisible(true);
     	setBounds(300, 90, 500, 600);
@@ -259,7 +259,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 		}
 		
 		if (e.getSource() == sub) {
-			dbConnect.register(6002, AuthenticationService.getInstance().getUser().getName(), "");
+			dbConnect.register(6002, AuthenticationService.getInstance().getUser().getEmail(), "");
 //			String nomeText = tname.getText();
 //			String emailText = temail.getText();
 			String pwdText = String.valueOf(tsenha.getPassword());
@@ -280,7 +280,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 			
         	if(pwdText.length() > 12 || pwdText.length() < 8) {
         		JOptionPane.showMessageDialog(this, "Senha deve ter de 4 a 6 fonemas.");
-        		dbConnect.register(6003, AuthenticationService.getInstance().getUser().getName(), "");
+        		dbConnect.register(6003, AuthenticationService.getInstance().getUser().getEmail(), "");
         		return;
         	}
 			
@@ -305,12 +305,12 @@ public class NewUserForm extends JFrame implements ActionListener {
 			
 			if(result) {
 				JOptionPane.showMessageDialog(this, "Novo Usuario Cadastrado com Sucesso.");
-				dbConnect.register(6005, AuthenticationService.getInstance().getUser().getName(), "");
+				dbConnect.register(6005, AuthenticationService.getInstance().getUser().getEmail(), "");
 				new NewUserForm();
 			}
 			else {
 				JOptionPane.showMessageDialog(this, "Erro no Cadastro!");
-				dbConnect.register(6006, AuthenticationService.getInstance().getUser().getName(), "");
+				dbConnect.register(6006, AuthenticationService.getInstance().getUser().getEmail(), "");
 			}
 		    
         }

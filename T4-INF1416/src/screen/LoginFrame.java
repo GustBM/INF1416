@@ -207,8 +207,8 @@ public class LoginFrame extends JFrame implements ActionListener {
         	if(dbConnect.checkUserPassword(st, user)) {
         		// JOptionPane.showMessageDialog(this, "Acesso Concedido, bem-vindo " + user.getName());
         		user.addTotalAccesses();
-        		dbConnect.register(3003, user.getName(), "");
-        		dbConnect.register(3002, user.getName(), "");
+        		dbConnect.register(3003, user.getEmail(), "");
+        		dbConnect.register(3002, user.getEmail(), "");
         		dbConnect.updateUser(user);
         		dispose();
         		new UserFrame();
@@ -228,20 +228,20 @@ public class LoginFrame extends JFrame implements ActionListener {
         		
         		if(numberOfTries == 1) {
         			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 2 tentativas antes do bloqueio.");
-        			dbConnect.register(3004, user.getName(), "");
+        			dbConnect.register(3004, user.getEmail(), "");
         		}
         		else if(numberOfTries == 2) {
         			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 1 tentativa antes do bloqueio.");
-        			dbConnect.register(3005, user.getName(), "");
+        			dbConnect.register(3005, user.getEmail(), "");
         		}
         		else if(numberOfTries >= 3) {
         			JOptionPane.showMessageDialog(this, "Senha incorreta! Bloqueio de dois minutos por excesso de erros.");
-        			dbConnect.register(3006, user.getName(), "");
+        			dbConnect.register(3006, user.getEmail(), "");
         			Date date = new Date();
         			user.setBloquedAt(new Timestamp(date.getTime()));
         			dbConnect.updateUser(user);
-        			dbConnect.register(3007, user.getName(), "");
-        			dbConnect.register(3002, user.getName(), "");
+        			dbConnect.register(3007, user.getEmail(), "");
+        			dbConnect.register(3002, user.getEmail(), "");
         		}		
         	}
 

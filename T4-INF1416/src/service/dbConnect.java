@@ -60,7 +60,7 @@ public class dbConnect {
 		return user.getPassword().equals(saltedPassword(pwd, user.getSalt()));
 	}
 	
-	public static void register(int msgId, String userName, String arq) {
+	public static void register(int msgId, String email, String arq) {
 		PreparedStatement ps;
 		int rs = 0;
     	String query = "INSERT INTO `registro`(`r_idMensagem`, `r_email`, `r_nomeArq`) VALUES (?,?,?)";
@@ -68,12 +68,12 @@ public class dbConnect {
     	try {
     		ps = dbConnect.connectDB().prepareStatement(query);
     		ps.setInt(1, msgId);
-    		ps.setString(2, userName);
+    		ps.setString(2, email);
             ps.setString(3, arq);
             rs = ps.executeUpdate();
             if(rs > 0)
             {
-            	System.out.println("Mensagem "+msgId+ " cadastrada");
+            	System.out.println("Mensagem "+msgId+ " cadastrada.");
             }
             
     	}catch (SQLException  ex) {
@@ -92,7 +92,7 @@ public class dbConnect {
             rs = ps.executeUpdate();
             if(rs > 0)
             {
-            	System.out.println("Mensagem "+msgId+ " cadastrada");
+            	System.out.println("Mensagem "+msgId+ " cadastrada.");
             }
             
     	}catch (SQLException  ex) {

@@ -42,7 +42,7 @@ public class UserFrame extends JFrame implements ActionListener {
 		this.user = AuthenticationService.getInstance().getUser();
 		setTitle("Bem-Vindo "+user.getName());
     	setVisible(true);
-    	dbConnect.register(5001, user.getName(), "");
+    	dbConnect.register(5001, user.getEmail(), "");
     	setBounds(300, 90, 500, 600);
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	setResizable(false);
@@ -127,12 +127,12 @@ public class UserFrame extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == optionButton1) {
-			dbConnect.register(5002, user.getName(), "");
+			dbConnect.register(5002, user.getEmail(), "");
 			dispose();
 			new NewUserForm();
 		}
 		if (e.getSource() == optionButton4) {
-			dbConnect.register(5005, user.getName(), "");
+			dbConnect.register(5005, user.getEmail(), "");
 			int input = JOptionPane.showConfirmDialog(null, 
 	                "Sair e Encerrar Programa?", "Confirmacao",JOptionPane.YES_NO_OPTION);
 			if(input == 0) {
