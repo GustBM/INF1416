@@ -27,16 +27,15 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
 	// Components of the Form
     private Container c;
 
-    private JRadioButton adm;
     private JButton sub;
     private JButton bck;
-    private JButton browse;
     
     public JFileChooser fc;
-    public String certificate_content_text;
-    public byte[] certificate_content_bytes;
-    public String email_certificate;
-    public String name_certificate;
+    public String certificate_content_text2;
+    public byte[] certificate_content_bytes2;
+    public String email_certificate2;
+    public String name_certificate2;
+    public int group2;
 
     // Dados do formulario
     private JLabel title_form	 		= new JLabel("Dados do Formulario: ");
@@ -68,7 +67,7 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
     private JLabel emailAddressLabel	= new JLabel("Email:");
     private JLabel emailAddress 		= new JLabel("");
 	
-	public NewUserFormConfirm(String name_certificate, String email_certificate, int group, String pwdText, byte[] certificate_content_bytes,  String certificate_path, int version_certificate, BigInteger serial_certificate, Date validity_certificate, String signature_certificate, X500Principal issuer_certificate, X500Principal subject_certificate) {
+	public NewUserFormConfirm(String name_certificate, String email_certificate, int group, String pwdText, byte[] certificate_content_bytes,  String certificate_path, int version_certificate, BigInteger serial_certificate, Date validity_certificate, String signature_certificate, X500Principal issuer_certificate, X500Principal subject_certificate, String certificate_content_text) {
 		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getEmail(), "");
 		setTitle("Confirmar Dados");
     	setVisible(true);
@@ -78,6 +77,12 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
     	
     	c = getContentPane();
         c.setLayout(null);
+        
+        certificate_content_text2 = certificate_content_text;
+        certificate_content_bytes2 = certificate_content_bytes;
+        email_certificate2 = email_certificate;
+        name_certificate2 = name_certificate;
+        group2 = group;
         
         setCorpo1(name_certificate, email_certificate, certificate_path, group, pwdText);
         
@@ -153,9 +158,7 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
         tsenha.setSize(200, 30);
         tsenha.setLocation(195, 185);
         tsenha.setEditable(false);
-        if (pwdText.length()>0) {
-        	tsenha.setText("Senha");
-        }
+        tsenha.setText(pwdText);
         c.add(tsenha);
 		
 	}
@@ -275,18 +278,16 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
 		
 		if (e.getSource() == bck) {
 			dispose();
-			new UserFrame();
+			new NewUserForm();
 		}
 		
 		if (e.getSource() == sub) {
 			dbConnect.register(6002, AuthenticationService.getInstance().getUser().getEmail(), "");
 			String pwdText = String.valueOf(tsenha.getPassword());
-			int group = 0;
+			int group2 = 0;
 			boolean result = false;
 			
-			if(adm.isSelected()) group = 1;
-			
-			if(pwdText.isEmpty() || certificate_content_text.isEmpty()) {
+			if(pwdText.isEmpty() || certificate_content_text2.isEmpty()) {
             	JOptionPane.showMessageDialog(this, "Preencha todos os Campos!");
             	return;
             }
@@ -298,7 +299,7 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
         	}
         	
         	try {
-				result = dbConnect.newUser(name_certificate, email_certificate, group, pwdText, certificate_content_bytes);
+				result = dbConnect.newUser(name_certificate2, email_certificate2, group2, pwdText, certificate_content_bytes2);
 			}catch(Exception e1) {
 				JOptionPane.showMessageDialog(this, "Erro! " + e1.getMessage());
 				return;
@@ -314,35 +315,5 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
 			}
 		    
         }
-		
-		if (e.getSource() == browse) {
-			fc = new JFileChooser();
-		    int returnValue = fc.showOpenDialog(null);
-		    if (returnValue == JFileChooser.APPROVE_OPTION) 
-		    {
-			    File selectedFile = fc.getSelectedFile();
-			    System.out.println("Arquivo selecionado: "+ selectedFile.getAbsolutePath());
-			    
-			    try {
-			    	certificate_content_text = new String(Files.readAllBytes(selectedFile.toPath()));
-			    	certificate_content_bytes = Files.readAllBytes(selectedFile.toPath());
-			    	JOptionPane.showMessageDialog(this, certificate_content_text);
-			    } catch (Exception ex) {
-			    	JOptionPane.showMessageDialog(this, "Erro! " + ex.getMessage());
-					return;
-			    }
-			    
-			    try {
-		            email_certificate = CertificateUtility.getCertificateEMAILADDRESS(certificate_content_bytes);
-		            name_certificate = CertificateUtility.getCertificateNAME(certificate_content_bytes);
-		            // JOptionPane.showMessageDialog(this, email_certificate);
-		            // JOptionPane.showMessageDialog(this, name_certificate);
-		            
-		        } catch (Exception ex) {
-		        	JOptionPane.showMessageDialog(this, "Erro! " + ex.getMessage());
-					return;
-		        }
-		    }
-		}
 	}
 }
