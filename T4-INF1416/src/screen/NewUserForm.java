@@ -378,7 +378,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 //            	return;
 //            }
 			
-			if(pwdText.isEmpty() || certificate_content_text.isEmpty()) {
+			if(pwdText.isEmpty() || certificate_content_text == null) {
             	JOptionPane.showMessageDialog(this, "Preencha todos os Campos!");
             	return;
             }
