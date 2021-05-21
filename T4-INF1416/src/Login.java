@@ -8,9 +8,9 @@ import service.dbConnect;
 public class Login {
     public static void main(String[] a) {
     	dbConnect.register(1001);
-    	AuthenticationService.getInstance().checkUserEmail("daniela@gmail.com", true);
-        //new LoginFrame();
-        new UserFrame();
+    	// AuthenticationService.getInstance().checkUserEmail("daniela@gmail.com", true);
+        new LoginFrame();
+        //new UserFrame();
     	// new NewUserForm();
     	// new LogView();
     }
