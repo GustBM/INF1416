@@ -3,6 +3,8 @@ package screen;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.InvalidKeyException;
@@ -12,15 +14,19 @@ import java.security.PublicKey;
 import java.security.SignatureException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 import model.User;
 import service.AuthenticationService;
+import service.CertificateUtility;
 import service.dbConnect;
 
 public class KeyVerificationFrame extends JFrame implements ActionListener {
@@ -32,8 +38,12 @@ public class KeyVerificationFrame extends JFrame implements ActionListener {
 	Container c = getContentPane();
 	private JLabel tsecretPhrase = new JLabel("Digite a frase secreta: ");
 	private JPasswordField secretPhraseField = new JPasswordField();
+	private JLabel keyLabel 	= new JLabel("Chave:");
+	private JFileChooser fc;
 	private JButton sendButton = new JButton("ENVIAR");
 	private JButton closeButton = new JButton("VOLTAR");
+	private JButton browse = new JButton("Procurar...");
+	private JTextField arqPath = new JTextField();
 	
 	private PrivateKey privateKey;
 	private PublicKey publicKey;
@@ -43,14 +53,22 @@ public class KeyVerificationFrame extends JFrame implements ActionListener {
 	public KeyVerificationFrame() {
 		dbConnect.register(4001);
 		setTitle("Verificacao das Chaves ");
-		tsecretPhrase.setBounds(50, 20, 200, 30);
-		secretPhraseField.setBounds(50, 50, 220, 30);
-		sendButton.setBounds(50, 100, 100, 30);
-		closeButton.setBounds(170, 100, 100, 30);
+		tsecretPhrase.setBounds(50, 120, 200, 30);
+		secretPhraseField.setBounds(50, 150, 220, 30);
+		sendButton.setBounds(50, 200, 100, 30);
+		closeButton.setBounds(170, 200, 100, 30);
+		
+		keyLabel.setBounds(50, 50, 220, 30);
+		arqPath.setBounds(50, 80, 220, 30);
+		arqPath.setEditable(false);
+        browse.setSize(100, 20);
+        browse.setLocation(150, 50);
+        browse.addActionListener(this);
+        
 		addComponentsToContainer();
 		setLayoutManager();
 		this.setVisible(true);
-    	this.setBounds(10, 10, 330, 200);
+    	this.setBounds(10, 10, 330, 300);
     	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	this.setResizable(false);
 		
@@ -67,6 +85,9 @@ public class KeyVerificationFrame extends JFrame implements ActionListener {
         c.add(secretPhraseField);
         c.add(sendButton);
         c.add(closeButton);
+        c.add(keyLabel);
+        c.add(browse);
+        c.add(arqPath);
     }
 
 	@Override
@@ -80,11 +101,21 @@ public class KeyVerificationFrame extends JFrame implements ActionListener {
 		if (e.getSource() == sendButton) {
 			User user = AuthenticationService.getInstance().getUser();
 			String userEmail = AuthenticationService.getInstance().getUser().getEmail();
+			String st = String.valueOf(secretPhraseField.getPassword());
+			
+			if(Objects.isNull(user)) {
+				JOptionPane.showMessageDialog(this, "Erro autenticacao do usuario.");
+			}
+			
+			if(Objects.isNull(userEmail) || Objects.isNull(st)) {
+				JOptionPane.showMessageDialog(this, "Erro! Preencha todos os campos.");
+			}
+			
+			String pathString = arqPath.getText();
 			boolean result = false;
 			int index = userEmail.indexOf('@');
 			String userName = userEmail.substring(0,index);
-			String st = String.valueOf(secretPhraseField.getPassword());
-			String pathString = "C:\\Users\\ADM\\eclipse-workspace\\T4-INF1416\\Pacote-T4\\Keys\\"+userName+"-pkcs8-des.key";
+
 			Path path = Paths.get(pathString);
 			
 			try {
@@ -136,6 +167,17 @@ public class KeyVerificationFrame extends JFrame implements ActionListener {
 					JOptionPane.showMessageDialog(this, "Erro ao verificar a chave. " + numTentativas + " Tentativas antes do bloqueio");
 			}
         }
+		
+		if (e.getSource() == browse) {
+			fc = new JFileChooser();
+		    int returnValue = fc.showOpenDialog(null);
+		    if (returnValue == JFileChooser.APPROVE_OPTION) 
+		    {
+			    File selectedFile = fc.getSelectedFile();
+			    System.out.println("Arquivo selecionado: "+ selectedFile.getAbsolutePath());
+			    arqPath.setText(selectedFile.getAbsolutePath());
+		    }
+		}
 	}
 
 }

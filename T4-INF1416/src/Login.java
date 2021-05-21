@@ -1,3 +1,4 @@
+import screen.KeyVerificationFrame;
 import screen.LogView;
 import screen.LoginFrame;
 import screen.NewUserForm;
@@ -10,7 +11,8 @@ public class Login {
     	dbConnect.register(1001);
     	// AuthenticationService.getInstance().checkUserEmail("daniela@gmail.com", true);
         new LoginFrame();
-        //new UserFrame();
+        // new UserFrame();
+    	// new KeyVerificationFrame();
     	// new NewUserForm();
     	// new LogView();
     }

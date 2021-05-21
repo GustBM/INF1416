@@ -12,7 +12,7 @@ public class dbConnect {
 	     
         Connection con = null;
         try {
-            con = DriverManager.getConnection("jdbc:mysql://localhost:8889/db_secure_system", "root", "root");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_secure_system", "root", "root");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
