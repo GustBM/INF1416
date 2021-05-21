@@ -17,6 +17,8 @@ import java.util.Date;
 
 import service.AuthenticationService;
 import service.dbConnect;
+import service.pwdNode;
+import service.pwdNode.Node;
 
 public class LoginFrame extends JFrame implements ActionListener {
 
@@ -29,19 +31,28 @@ public class LoginFrame extends JFrame implements ActionListener {
 	private JLabel passwordLabel = new JLabel("SENHA");
 	private JTextField userTextField = new JTextField();
 	private JPasswordField passwordField = new JPasswordField();
+	private JPasswordField passwordFieldFake = new JPasswordField();
 	private JButton nextButton = new JButton("ENVIAR");
 	private JButton loginButton = new JButton("PROXIMO");
 	private JButton resetButton = new JButton("LIMPAR");
 	private JButton restartButton = new JButton("REINICIAR");
-	private JButton pwdButton1 = new JButton("BA");
-	private JButton pwdButton2 = new JButton("CA");
-	private JButton pwdButton3 = new JButton("DA");
-	private JButton pwdButton4 = new JButton("FA");
-	private JButton pwdButton5 = new JButton("GA");
-	private JButton pwdButton6 = new JButton("HA");
+	private JButton pwdButton1 = new JButton("BA-BE-BO");
+	private JButton pwdButton2 = new JButton("CA-CE-CO");
+	private JButton pwdButton3 = new JButton("DA-DE-DO");
+	private JButton pwdButton4 = new JButton("FA-FE-FO");
+	private JButton pwdButton5 = new JButton("GA-GE-GO");
+	private JButton pwdButton6 = new JButton("HA-HE-HO");
     
     private int numberOfTries = 0;
     private HashMap<String, Integer> NumUserTries = new HashMap<String, Integer>();
+    private String stringPwdFake = "";
+    private String[] stringPwd1 = new String[6];
+    private String[] stringPwd2 = new String[6];
+    private String[] stringPwd3 = new String[6];
+    
+    private Node pwdNode1;
+    private Node pwdNode2;
+    private Node pwdNode3;
     
     public LoginFrame() {
     	dbConnect.register(2001);
@@ -54,7 +65,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         setLocationAndSize();
         addComponentsToContainer();
         addActionEvent();
-        // organizeFoneticButtons();
+        organizeFoneticButtons();
     }
 
     private void setLayoutManager() {
@@ -65,7 +76,8 @@ public class LoginFrame extends JFrame implements ActionListener {
         userLabel.setBounds(50, 50, 100, 30);
         passwordLabel.setBounds(50, 120, 100, 30);
         userTextField.setBounds(150, 50, 150, 30);
-        passwordField.setBounds(150, 120, 150, 30);
+        passwordField.setBounds(550, 120, 150, 30);
+        passwordFieldFake.setBounds(150, 120, 150, 30);
         loginButton.setBounds(50, 200, 100, 30);
         nextButton.setBounds(50, 200, 100, 30);
         resetButton.setBounds(200, 200, 100, 30);
@@ -75,6 +87,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         container.add(userLabel);
         // container.add(passwordLabel);
         container.add(userTextField);
+        // container.add(passwordFieldFake);
         // container.add(passwordField);
         container.add(loginButton);
         container.add(nextButton);
@@ -84,6 +97,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     private void addActionEvent() {
     	passwordField.setEditable(false);
+    	passwordFieldFake.setEditable(false);
         loginButton.addActionListener(this);
         nextButton.addActionListener(this);
         resetButton.addActionListener(this);
@@ -107,12 +121,12 @@ public class LoginFrame extends JFrame implements ActionListener {
     	List<String> intList = Arrays.asList(stringArray);
 		Collections.shuffle(intList);
 		intList.toArray(stringArray);
-    	pwdButton1.setText(stringArray[0]);
-    	pwdButton2.setText(stringArray[1]);
-    	pwdButton3.setText(stringArray[2]);
-    	pwdButton4.setText(stringArray[3]);
-    	pwdButton5.setText(stringArray[4]);
-    	pwdButton6.setText(stringArray[5]);
+    	pwdButton1.setText(stringArray[0]+"-"+stringArray[6]+"-"+stringArray[12]);
+    	pwdButton2.setText(stringArray[1]+"-"+stringArray[7]+"-"+stringArray[13]);
+    	pwdButton3.setText(stringArray[2]+"-"+stringArray[8]+"-"+stringArray[14]);
+    	pwdButton4.setText(stringArray[3]+"-"+stringArray[9]+"-"+stringArray[15]);
+    	pwdButton5.setText(stringArray[4]+"-"+stringArray[10]+"-"+stringArray[16]);
+    	pwdButton6.setText(stringArray[5]+"-"+stringArray[11]+"-"+stringArray[17]);
     }
     
     private void verificationPhase2() {
@@ -122,6 +136,7 @@ public class LoginFrame extends JFrame implements ActionListener {
     	
     	container.add(passwordLabel);
     	container.add(passwordField);
+    	container.add(passwordFieldFake);
     	
     	container.add(pwdButton1);
         container.add(pwdButton2);
@@ -133,12 +148,12 @@ public class LoginFrame extends JFrame implements ActionListener {
         container.add(restartButton);
         restartButton.setBounds(120, 320, 120, 30);
         
-    	pwdButton1.setBounds(90, 250, 60, 30);
-        pwdButton2.setBounds(150, 250, 60, 30);
-        pwdButton3.setBounds(210, 250, 60, 30);
-        pwdButton4.setBounds(90, 280, 60, 30);
-        pwdButton5.setBounds(150, 280, 60, 30);
-        pwdButton6.setBounds(210, 280, 60, 30);
+    	pwdButton1.setBounds(30, 250, 100, 30);
+        pwdButton2.setBounds(130, 250, 100, 30);
+        pwdButton3.setBounds(230, 250, 100, 30);
+        pwdButton4.setBounds(30, 280, 100, 30);
+        pwdButton5.setBounds(130, 280, 100, 30);
+        pwdButton6.setBounds(230, 280, 100, 30);
     }
     
     private void resetFrame() {
@@ -151,6 +166,53 @@ public class LoginFrame extends JFrame implements ActionListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
     }
+    
+    private void insertValInArray(String[] arr, String val) {
+    	int i = 0;
+    	for(String st : arr) {
+    		if(Objects.isNull(st)) arr[i] = val;
+    		else i++;
+    	}
+    }
+    
+    private void cleanArray(String[] arr) {
+    	for(int i = 0; i < 6; i++) {
+    		arr[i] = null;
+    	}
+    }
+    
+    private void setPwdNodes() {
+    	pwdNode1 = new Node(stringPwd1[0]);
+    	pwdNode2 = new Node(stringPwd2[0]);
+    	pwdNode3 = new Node(stringPwd3[0]);
+    	
+    	pwdNode.insertPwdNode(pwdNode1, stringPwd1, stringPwd2, stringPwd3, nodeLength(stringPwd1)-1, 1);
+    	pwdNode.insertPwdNode(pwdNode2, stringPwd1, stringPwd2, stringPwd3, nodeLength(stringPwd2)-1, 1);
+    	pwdNode.insertPwdNode(pwdNode3, stringPwd1, stringPwd2, stringPwd3, nodeLength(stringPwd3)-1, 1);
+    	
+    }
+    
+    private void checkNodes() {
+    	setPwdNodes();
+    	pwdNode.checkPwdNodes(pwdNode1, "",AuthenticationService.getInstance().getUser());
+    	if(pwdNode.verificationResult) System.out.println("Senha esta no Node 1");
+    	else System.out.println("Não achou senha Node 1");
+    	pwdNode.checkPwdNodes(pwdNode2, "",AuthenticationService.getInstance().getUser());
+    	if(pwdNode.verificationResult) System.out.println("Senha esta no Node 2");
+    	else System.out.println("Não achou senha Node 2");
+    	pwdNode.checkPwdNodes(pwdNode3, "",AuthenticationService.getInstance().getUser());
+    	if(pwdNode.verificationResult) System.out.println("Senha esta no Node 3");
+    	else System.out.println("Não achou senha Node 3");
+    }
+    
+    private static int nodeLength(String[] stringArray) {
+		int i = 0;
+		for(String a : stringArray) {
+			if(Objects.isNull(a)) return i;
+			i++;
+		}
+		return stringArray.length;
+	}
     
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -174,7 +236,7 @@ public class LoginFrame extends JFrame implements ActionListener {
                 verificationPhase2();
                 return;
             }else {
-                JOptionPane.showMessageDialog(this, "Usuario Invalido!");
+                JOptionPane.showMessageDialog(this, "Usuario Invalidos!");
                 dbConnect.register(2005);
                 return;
             }
@@ -183,8 +245,9 @@ public class LoginFrame extends JFrame implements ActionListener {
         
         // Botao reset
         if (e.getSource() == resetButton) {
-            // userTextField.setText("");
+            
             passwordField.setText("");
+            passwordFieldFake.setText("");
         }
         
         if (e.getSource() == restartButton) {
@@ -192,23 +255,25 @@ public class LoginFrame extends JFrame implements ActionListener {
         }
         
         if (e.getSource() == nextButton) {
-        	String st = String.valueOf(passwordField.getPassword());
+        	String st = String.valueOf(passwordFieldFake.getPassword());
         	User user = AuthenticationService.getInstance().getUser();
         	if(AuthenticationService.getInstance().isUserBlocked(user.getEmail())) {
             	JOptionPane.showMessageDialog(this, "Usuario Bloqueado!");
             	dbConnect.register(2004);
             	return;
             }
-        	if(st.length() > 12 || st.length() < 8) {
-        		JOptionPane.showMessageDialog(this, "Senha deve ter de 4 a 6 fonemas.");
+        	if(st.length() >= 12 || st.length() < 3) {
+        		JOptionPane.showMessageDialog(this, "Senha deve ter entre 3 a 6 fonemas.");
         		return;
         	}
         	
-        	if(dbConnect.checkUserPassword(st, user)) {
+        	checkNodes();
+        	
+        	if(pwdNode.verificationResult) {
         		// JOptionPane.showMessageDialog(this, "Acesso Concedido, bem-vindo " + user.getName());
         		user.addTotalAccesses();
-        		dbConnect.register(3003, user.getEmail(), "");
-        		dbConnect.register(3002, user.getEmail(), "");
+        		dbConnect.register(3003, user.getName(), "");
+        		dbConnect.register(3002, user.getName(), "");
         		dbConnect.updateUser(user);
         		dispose();
         		new UserFrame();
@@ -218,7 +283,6 @@ public class LoginFrame extends JFrame implements ActionListener {
         			NumUserTries.put(user.getEmail(), 0);
         		}
         		if(!Objects.isNull(NumUserTries.get(user.getEmail()))) {
-        			System.out.println(NumUserTries);
         			NumUserTries.put(user.getEmail(), NumUserTries.get(user.getEmail())+1);
         		} else {
         			NumUserTries.put(user.getEmail(), 1);
@@ -227,27 +291,27 @@ public class LoginFrame extends JFrame implements ActionListener {
         		numberOfTries = NumUserTries.get(user.getEmail());
         		
         		if(numberOfTries == 1) {
-        			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 2 tentativas antes do bloqueio.");
-        			dbConnect.register(3004, user.getEmail(), "");
+        			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 2 tentativas antes do bloqueio");
+        			dbConnect.register(3004, user.getName(), "");
         		}
         		else if(numberOfTries == 2) {
-        			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 1 tentativa antes do bloqueio.");
-        			dbConnect.register(3005, user.getEmail(), "");
+        			JOptionPane.showMessageDialog(this, "Senha incorreta! Mais 1 tentativas antes do bloqueio");
+        			dbConnect.register(3005, user.getName(), "");
         		}
         		else if(numberOfTries >= 3) {
-        			JOptionPane.showMessageDialog(this, "Senha incorreta! Bloqueio de dois minutos por excesso de erros.");
-        			dbConnect.register(3006, user.getEmail(), "");
+        			JOptionPane.showMessageDialog(this, "Senha incorreta! Bloqueio de dois minutos por excesso de erros");
+        			dbConnect.register(3006, user.getName(), "");
         			Date date = new Date();
         			user.setBloquedAt(new Timestamp(date.getTime()));
         			dbConnect.updateUser(user);
-        			dbConnect.register(3007, user.getEmail(), "");
-        			dbConnect.register(3002, user.getEmail(), "");
+        			dbConnect.register(3007, user.getName(), "");
+        			dbConnect.register(3002, user.getName(), "");
         		}		
         	}
 
         }
         
-        // Botao Fonetico
+        //Botao Fonetico
         if (   e.getSource() == pwdButton1 
         	|| e.getSource() == pwdButton2
         	|| e.getSource() == pwdButton3
@@ -256,10 +320,26 @@ public class LoginFrame extends JFrame implements ActionListener {
         	|| e.getSource() == pwdButton6) {
         	JButton bt = (JButton) e.getSource();
         	String st = String.valueOf(passwordField.getPassword());
-        	if(st.length() > 12) return;
+        	String stfake = String.valueOf(passwordFieldFake.getPassword());
+        	if(stfake.length() >= 12) return;
+        	stringPwdFake = "";
+        	cleanArray(stringPwd1);
+        	cleanArray(stringPwd2);
+        	cleanArray(stringPwd3);
         	String buttonText = bt.getText();
-            passwordField.setText(st+buttonText);
-            // organizeFoneticButtons();
+        	if(st.length() > 0) passwordField.setText(st+"-"+buttonText);
+        	else passwordField.setText(st+buttonText);
+            String stAfter = String.valueOf(passwordField.getPassword());
+            String[] arrOfPwd = stAfter.split("-");
+            for(int c = 0; c < (arrOfPwd.length/3); c++)
+            	passwordFieldFake.setText(stringPwdFake+="**");
+            for(int i = 0; i<arrOfPwd.length; i+=3) {
+            	insertValInArray(stringPwd1, arrOfPwd[i]);
+            	insertValInArray(stringPwd2, arrOfPwd[i+1]);
+            	insertValInArray(stringPwd3, arrOfPwd[i+2]);
+            }
+            
+            organizeFoneticButtons();
         }
     }
 
