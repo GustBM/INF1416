@@ -39,6 +39,7 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
     public String name_certificate;
 
     // Dados do formulario
+    private JLabel title_form	 		= new JLabel("Dados do Formulario: ");
     private JLabel nameLabel	 		= new JLabel("Nome: ");
  	private JLabel name  				= new JLabel("");
  	private JLabel emailLabel 			= new JLabel("Email:");
@@ -51,6 +52,7 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
     private JPasswordField tsenha 		= new JPasswordField();
     
     // Dados do certificado digital
+    private JLabel title_certificate	= new JLabel("Dados do Certificado: ");
     private JLabel versionLabel	 		= new JLabel("Versao: ");
  	private JLabel version  			= new JLabel("");
  	private JLabel serialLabel 			= new JLabel("Serie:");
@@ -88,12 +90,18 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
 
 	private void setCorpo1(String name_certificate, String email_certificate, String certificate_path, int group, String pwdText) {
 		
+		// Titulo
+		title_form.setSize(300, 30);
+		title_form.setLocation(100, 35);
+        
+		c.add(title_form);
+		
 		// Nome
 		nameLabel.setSize(300, 30);
-		nameLabel.setLocation(100, 105);
+		nameLabel.setLocation(100, 65);
 		
 		name.setSize(300, 30);
-		name.setLocation(148, 105);
+		name.setLocation(148, 65);
 		name.setText(name_certificate);
         
 		c.add(nameLabel);
@@ -101,10 +109,10 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
 		
 		// Email
 		emailLabel.setSize(300, 30);
-		emailLabel.setLocation(100, 135);
+		emailLabel.setLocation(100, 95);
 		
 		email.setSize(300, 30);
-		email.setLocation(145, 135);
+		email.setLocation(145, 95);
 		email.setText(email_certificate);
         
 		c.add(emailLabel);
@@ -112,10 +120,10 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
 		
 		// Certificado
 		certificateLabel.setSize(300, 30);
-		certificateLabel.setLocation(100, 165);
+		certificateLabel.setLocation(100, 125);
 		
 		certificate.setSize(300, 30);
-		certificate.setLocation(180, 165);
+		certificate.setLocation(180, 125);
 		certificate.setText(certificate_path);
         
 		c.add(certificateLabel);
@@ -123,10 +131,10 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
 		
 		// Grupo
         grupoLabel.setSize(300, 30);
-        grupoLabel.setLocation(100, 195);
+        grupoLabel.setLocation(100, 155);
         
         grupo.setSize(300, 30);
-        grupo.setLocation(150, 195);
+        grupo.setLocation(150, 155);
         if (group == 1) {
         	grupo.setText("Administrador");
         }
@@ -139,11 +147,11 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
         
         // Senha
         senha.setSize(300, 30);
-        senha.setLocation(100, 225);
+        senha.setLocation(100, 185);
         c.add(senha);
         
         tsenha.setSize(200, 30);
-        tsenha.setLocation(195, 225);
+        tsenha.setLocation(195, 185);
         tsenha.setEditable(false);
         if (pwdText.length()>0) {
         	tsenha.setText("Senha");
@@ -154,12 +162,18 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
 	
 private void setCorpo2(int version_certificate, BigInteger serial_certificate, Date validity_certificate, String signature_certificate, X500Principal issuer_certificate, X500Principal subject_certificate, String email_certificate) {
 		
+		// Titulo
+		title_certificate.setSize(300, 30);
+		title_certificate.setLocation(100, 245);
+		
+		c.add(title_certificate);
+			
 		// Versao
 		versionLabel.setSize(300, 30);
-		versionLabel.setLocation(100, 285);
+		versionLabel.setLocation(100, 275);
 		
 		version.setSize(300, 30);
-		version.setLocation(154, 285);
+		version.setLocation(154, 275);
 		version.setText(""+version_certificate);
         
 		c.add(versionLabel);
@@ -167,10 +181,10 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
 		
 		// Serie
 		serialLabel.setSize(300, 30);
-		serialLabel.setLocation(100, 315);
+		serialLabel.setLocation(100, 305);
 		
 		serial.setSize(300, 30);
-		serial.setLocation(140, 315);
+		serial.setLocation(140, 305);
 		serial.setText(""+serial_certificate);
         
 		c.add(serialLabel);
@@ -178,10 +192,10 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
 		
 		// Validade
 		validityLabel.setSize(300, 30);
-		validityLabel.setLocation(100, 345);
+		validityLabel.setLocation(100, 335);
 		
 		validity.setSize(300, 30);
-		validity.setLocation(165, 345);
+		validity.setLocation(165, 335);
 		validity.setText(""+validity_certificate);
         
 		c.add(validityLabel);
@@ -189,10 +203,10 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
 		
 		// Tipo de Assinatura
         signatureLabel.setSize(300, 30);
-        signatureLabel.setLocation(100, 375);
+        signatureLabel.setLocation(100, 365);
         
         signature.setSize(300, 30);
-        signature.setLocation(228, 375);
+        signature.setLocation(228, 365);
         signature.setText(signature_certificate);
         
         c.add(signatureLabel);
@@ -200,10 +214,10 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
         
         // Emissor
         issuerLabel.setSize(300, 30);
-        issuerLabel.setLocation(100, 405);
+        issuerLabel.setLocation(100, 395);
         
         issuer.setSize(200, 30);
-        issuer.setLocation(162, 405);
+        issuer.setLocation(162, 395);
         issuer.setText(""+issuer_certificate);
         
         c.add(issuerLabel);
@@ -211,10 +225,10 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
         
         // Sujeito (FN)
         subjectLabel.setSize(300, 30);
-        subjectLabel.setLocation(100, 435);
+        subjectLabel.setLocation(100, 425);
         
         subject.setSize(200, 30);
-        subject.setLocation(155, 435);
+        subject.setLocation(155, 425);
         subject.setText(""+subject_certificate);
         
         c.add(subjectLabel);
@@ -222,10 +236,10 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
         
         // Email
         emailAddressLabel.setSize(300, 30);
-        emailAddressLabel.setLocation(100, 465);
+        emailAddressLabel.setLocation(100, 455);
         
         emailAddress.setSize(200, 30);
-        emailAddress.setLocation(145, 465);
+        emailAddress.setLocation(145, 455);
         emailAddress.setText(email_certificate);
         
         c.add(emailAddressLabel);
