@@ -145,7 +145,7 @@ public class AuthenticationService {
             dbConnect.register(4004);
 
 			// TODO Auto-generated catch block
-			throw new Exception("Caminho para o arquivo da chave privada inválido.");
+			throw new Exception("Path invalido.");
 		}
         byte[] pemBytes = cipher.doFinal(cipherPemBytes);
 
@@ -177,7 +177,6 @@ public class AuthenticationService {
         if(signature.verify(cipherMessage)) {
             return true;
         } else {
-        	dbConnect.register(4006);
             return false;
         }
     }

@@ -67,6 +67,22 @@ public class LoginFrame extends JFrame implements ActionListener {
         addActionEvent();
         organizeFoneticButtons();
     }
+    
+    public LoginFrame(String email) {
+    	dbConnect.register(2001);
+    	this.setTitle("Login Form");
+    	this.setVisible(true);
+    	this.setBounds(10, 10, 370, 400);
+    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	this.setResizable(false);
+        setLayoutManager();
+        setLocationAndSize();
+        addComponentsToContainer();
+        addActionEvent();
+        organizeFoneticButtons();
+        userTextField.setText(email);
+        verificationPhase2();
+    }
 
     private void setLayoutManager() {
         container.setLayout(null);
@@ -85,10 +101,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 
     private void addComponentsToContainer() {
         container.add(userLabel);
-        // container.add(passwordLabel);
         container.add(userTextField);
-        // container.add(passwordFieldFake);
-        // container.add(passwordField);
         container.add(loginButton);
         container.add(nextButton);
         container.add(resetButton);
@@ -195,14 +208,9 @@ public class LoginFrame extends JFrame implements ActionListener {
     private void checkNodes() {
     	setPwdNodes();
     	pwdNode.checkPwdNodes(pwdNode1, "",AuthenticationService.getInstance().getUser());
-    	if(pwdNode.verificationResult) System.out.println("Senha esta no Node 1");
-    	else System.out.println("Não achou senha Node 1");
     	pwdNode.checkPwdNodes(pwdNode2, "",AuthenticationService.getInstance().getUser());
-    	if(pwdNode.verificationResult) System.out.println("Senha esta no Node 2");
-    	else System.out.println("Não achou senha Node 2");
     	pwdNode.checkPwdNodes(pwdNode3, "",AuthenticationService.getInstance().getUser());
-    	if(pwdNode.verificationResult) System.out.println("Senha esta no Node 3");
-    	else System.out.println("Não achou senha Node 3");
+    	
     }
     
     private static int nodeLength(String[] stringArray) {
@@ -218,6 +226,7 @@ public class LoginFrame extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         
         if (e.getSource() == loginButton) {
+        	// Primeira etapa de verificacao
             String userText;
             userText = userTextField.getText();
             if(!regexEmail(userText)) {
@@ -255,6 +264,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         }
         
         if (e.getSource() == nextButton) {
+        	// Segunda etapa de verificacao
         	String st = String.valueOf(passwordFieldFake.getPassword());
         	User user = AuthenticationService.getInstance().getUser();
         	if(AuthenticationService.getInstance().isUserBlocked(user.getEmail())) {
@@ -270,13 +280,13 @@ public class LoginFrame extends JFrame implements ActionListener {
         	checkNodes();
         	
         	if(pwdNode.verificationResult) {
-        		// JOptionPane.showMessageDialog(this, "Acesso Concedido, bem-vindo " + user.getName());
-        		user.addTotalAccesses();
         		dbConnect.register(3003, user.getName(), "");
         		dbConnect.register(3002, user.getName(), "");
-        		dbConnect.updateUser(user);
+        		
+        		// Terceira etapa de verificacao
         		dispose();
-        		new UserFrame();
+        		new KeyVerificationFrame();
+        		
         	} else {
         		
         		if(NumUserTries.isEmpty()) {
