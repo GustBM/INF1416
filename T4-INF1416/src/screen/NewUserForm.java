@@ -88,6 +88,28 @@ public class NewUserForm extends JFrame implements ActionListener {
         setVisible(true);
 	}
 	
+	public NewUserForm(String name_certificate, String email_certificate, int group, String pwdText) {	
+		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getEmail(), "");
+		JOptionPane.showMessageDialog(this, name_certificate);
+		
+		setTitle("Novo Usuario");
+    	setVisible(true);
+    	setBounds(300, 90, 500, 600);
+    	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	setResizable(false);
+    	
+    	c = getContentPane();
+        c.setLayout(null);
+        
+        setCabecalho();
+        
+        setCorpo1();
+        
+        setCorpo2(group, pwdText);
+
+        setVisible(true);
+	}
+	
 	private void setCabecalho () {
 		
 		// Login
@@ -222,6 +244,81 @@ public class NewUserForm extends JFrame implements ActionListener {
         bck.addActionListener(this);
         c.add(bck);
 	}
+	
+	private void setCorpo2(int group, String pwdText) {
+		// Titulo
+		title.setSize(300, 30);
+        title.setLocation(100, 140);
+        c.add(title);
+        
+        // Certificado   
+        certificate.setSize(100, 20);
+        certificate.setLocation(100, 190);
+        c.add(certificate);
+        
+        browse = new JButton("Procurar...");
+        browse.setSize(190, 20);
+        browse.setLocation(200, 190);
+        browse.addActionListener(this);
+        c.add(browse);
+        
+        // Grupo
+        grupo = new JLabel("Grupo:");
+        grupo.setSize(100, 20);
+        grupo.setLocation(100, 240);
+        c.add(grupo);
+        
+        adm = new JRadioButton("Administrador");
+        adm.setSize(120, 20);
+        adm.setLocation(200, 240);
+  
+        nml = new JRadioButton("Normal");
+        nml.setSize(100, 20);
+        nml.setLocation(320, 240);
+        
+        if (group == 1) {
+        	adm.setSelected(true);
+        	nml.setSelected(false);
+        }
+        else if(group == 0) {
+        	adm.setSelected(false);
+        	nml.setSelected(true);
+        }
+        
+        c.add(adm);
+        c.add(nml);
+        
+        gengp = new ButtonGroup();
+        gengp.add(adm);
+        gengp.add(nml);
+        
+        // Senha
+        senha.setSize(100, 20);
+        senha.setLocation(100, 290);
+        c.add(senha);
+        
+        tsenha.setSize(200, 20);
+        tsenha.setLocation(200, 290);
+        tsenha.setEditable(false);
+        tsenha.setText(pwdText);
+        c.add(tsenha);
+        
+        setPwdButtons();
+        
+        // Submit
+        sub = new JButton("Cadastrar");
+        sub.setSize(100, 20);
+        sub.setLocation(130, 540);
+        sub.addActionListener(this);
+        c.add(sub);
+        
+        // Back
+        bck = new JButton("Voltar");
+        bck.setSize(100, 20);
+        bck.setLocation(260, 540);
+        bck.addActionListener(this);
+        c.add(bck);
+	}
 
 	private boolean regexEmail(String email) {
     	String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
@@ -312,7 +409,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 //			}
         	
         	dispose();
-        	JOptionPane.showMessageDialog(this, group);
+        	// JOptionPane.showMessageDialog(this, group);
         	new NewUserFormConfirm(name_certificate, email_certificate, group, pwdText, certificate_content_bytes, certificate_path, version_certificate, serial_certificate, validity_certificate, signature_certificate, issuer_certificate, subject_certificate, certificate_content_text);
 			
 //			if(result) {
