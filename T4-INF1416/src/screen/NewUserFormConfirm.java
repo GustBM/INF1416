@@ -70,7 +70,7 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
 	
 	public NewUserFormConfirm(String name_certificate, String email_certificate, int group, String pwdText, byte[] certificate_content_bytes,  String certificate_path, int version_certificate, BigInteger serial_certificate, Date validity_certificate, String signature_certificate, X500Principal issuer_certificate, X500Principal subject_certificate) {
 		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getEmail(), "");
-		setTitle("Novo Usuario");
+		setTitle("Confirmar Dados");
     	setVisible(true);
     	setBounds(300, 90, 500, 600);
     	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
