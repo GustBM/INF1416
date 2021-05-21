@@ -36,6 +36,8 @@ public class AuthenticationService {
 	private static AuthenticationService authService = new AuthenticationService();
 	
 	private User user;
+	private static PrivateKey privateKey;
+	private static PublicKey publicKey;
 	
 	public static AuthenticationService getInstance() {
 		return authService;
@@ -44,6 +46,14 @@ public class AuthenticationService {
 	public User getUser() {
         return this.user;
     }
+	
+	public PrivateKey returnPriK () {
+		return this.privateKey;
+	}
+	
+	public PublicKey returnPubK () {
+		return this.publicKey;
+	}
 	
 	public boolean checkUserEmail(String username, boolean setUser) {
     	PreparedStatement ps;
@@ -143,8 +153,6 @@ public class AuthenticationService {
 			cipherPemBytes = Files.readAllBytes(path);
 		} catch (IOException e) {
             dbConnect.register(4004);
-
-			// TODO Auto-generated catch block
 			throw new Exception("Path invalido.");
 		}
         byte[] pemBytes = cipher.doFinal(cipherPemBytes);
@@ -157,24 +165,27 @@ public class AuthenticationService {
         PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
 
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
+        // TODO tirar isso depois
+        privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
         return keyFactory.generatePrivate(pkcs8EncodedKeySpec);
     }
 	
-	public static boolean isPrivateKeyValid(PrivateKey privateKey, PublicKey publicKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+	public static boolean isPrivateKeyValid(PrivateKey priKey, PublicKey pubKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
 
         byte[] message = new byte[2048];
         (new SecureRandom()).nextBytes(message);
 
         Signature signature = Signature.getInstance("MD5withRSA");
-        signature.initSign(privateKey);
+        signature.initSign(priKey);
         signature.update(message);
         byte[] cipherMessage = signature.sign();
 
-        signature.initVerify(publicKey);
+        signature.initVerify(pubKey);
         signature.update(message);
 
         if(signature.verify(cipherMessage)) {
+        	privateKey = priKey;
+        	publicKey = pubKey;
             return true;
         } else {
             return false;
