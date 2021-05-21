@@ -90,7 +90,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 	
 	public NewUserForm(String name_certificate, String email_certificate, int group, String pwdText) {	
 		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getEmail(), "");
-		JOptionPane.showMessageDialog(this, name_certificate);
+		// JOptionPane.showMessageDialog(this, name_certificate);
 		
 		setTitle("Novo Usuario");
     	setVisible(true);
