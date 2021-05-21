@@ -1,12 +1,33 @@
 package service;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.SecureRandom;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
 
 import model.User;
 
@@ -78,26 +99,6 @@ public class AuthenticationService {
         long diffInMillies = date1.getTime() - dateBlock.getTime();
         return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
     }
-	/*
-	public static String pwdDigest(String senha, String salt) {
-        MessageDigest md = null;
-        StringBuffer buf = new StringBuffer();
-        byte[] bytes;
-        try {
-            md = MessageDigest.getInstance("md");
-        } catch (NoSuchAlgorithmException e) {
-            System.out.println("Nao encontrou algoritmo sha1");
-            return null;
-        }
-        md.update((senha + salt).getBytes());
-        bytes = md.digest();
-        for(int i = 0; i < bytes.length; i++) {
-	    	String hex = Integer.toHexString(0x0100 + (bytes[i] & 0x00FF)).substring(1);
-	    	buf.append((hex.length() < 2 ? "0" : "") + hex);
-	    }
-        
-        return buf.toString();
-    }*/
 	
 	private void setUser(ResultSet rs) throws SQLException {
 		User usr = new User();
@@ -113,5 +114,72 @@ public class AuthenticationService {
 		dbConnect.register(2003, usr.getEmail(), null);
 		this.user = usr;
 	}
+	
+	public static PublicKey getPublicKey(User user) throws Exception {
+
+        String certificate = user.getCertificate();
+        byte[] certificateBytes = certificate.getBytes();
+
+        CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
+        InputStream certificateInputStream = new ByteArrayInputStream(certificateBytes);
+        X509Certificate x509Certificate = (X509Certificate) certificateFactory.generateCertificate(certificateInputStream);  
+
+        return x509Certificate.getPublicKey();
+    }
+	
+	public static PrivateKey getPrivateKey(String password, Path path) throws Exception {
+
+        SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+        secureRandom.setSeed(password.getBytes());
+
+        KeyGenerator keyGenerator = KeyGenerator.getInstance("DES");
+        keyGenerator.init(56, secureRandom);
+        Key key = keyGenerator.generateKey();
+
+        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, key);
+        byte[] cipherPemBytes;
+		try {
+			cipherPemBytes = Files.readAllBytes(path);
+		} catch (IOException e) {
+            dbConnect.register(4004);
+
+			// TODO Auto-generated catch block
+			throw new Exception("Caminho para o arquivo da chave privada inválido.");
+		}
+        byte[] pemBytes = cipher.doFinal(cipherPemBytes);
+
+        String pemString = new String(pemBytes);
+        pemString = pemString.replace("-----BEGIN PRIVATE KEY-----\n","");
+        pemString = pemString.replace("-----END PRIVATE KEY-----\n","");
+
+        byte[] privateKeyBytes = Base64.getMimeDecoder().decode(pemString);
+        PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+
+        return keyFactory.generatePrivate(pkcs8EncodedKeySpec);
+    }
+	
+	public static boolean isPrivateKeyValid(PrivateKey privateKey, PublicKey publicKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+
+        byte[] message = new byte[2048];
+        (new SecureRandom()).nextBytes(message);
+
+        Signature signature = Signature.getInstance("MD5withRSA");
+        signature.initSign(privateKey);
+        signature.update(message);
+        byte[] cipherMessage = signature.sign();
+
+        signature.initVerify(publicKey);
+        signature.update(message);
+
+        if(signature.verify(cipherMessage)) {
+            return true;
+        } else {
+        	dbConnect.register(4006);
+            return false;
+        }
+    }
 	
 }
