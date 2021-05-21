@@ -300,6 +300,8 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
         	
         	try {
 				result = dbConnect.newUser(name_certificate2, email_certificate2, group2, pwdText, certificate_content_bytes2);
+				dispose();
+				new NewUserForm();
 			}catch(Exception e1) {
 				JOptionPane.showMessageDialog(this, "Erro! " + e1.getMessage());
 				return;
