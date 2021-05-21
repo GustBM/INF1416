@@ -312,6 +312,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 //			}
         	
         	dispose();
+        	JOptionPane.showMessageDialog(this, group);
         	new NewUserFormConfirm(name_certificate, email_certificate, group, pwdText, certificate_content_bytes, certificate_path, version_certificate, serial_certificate, validity_certificate, signature_certificate, issuer_certificate, subject_certificate, certificate_content_text);
 			
 //			if(result) {

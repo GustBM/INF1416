@@ -284,7 +284,7 @@ private void setCorpo2(int version_certificate, BigInteger serial_certificate, D
 		if (e.getSource() == sub) {
 			dbConnect.register(6002, AuthenticationService.getInstance().getUser().getEmail(), "");
 			String pwdText = String.valueOf(tsenha.getPassword());
-			int group2 = 0;
+
 			boolean result = false;
 			
 			if(pwdText.isEmpty() || certificate_content_text2.isEmpty()) {
