@@ -50,6 +50,7 @@ public class FileScreen extends JFrame implements ActionListener {
 	private JTextField arqPath = new JTextField();
 	private JButton browse = new JButton("Buscar");
 	private JButton search = new JButton("Listar");
+	private JButton closeButton = new JButton("VOLTAR");
 	
 	// Tabela
 	private JLabel arqCod = new JLabel("COD_ARQUIVO");
@@ -151,11 +152,11 @@ public class FileScreen extends JFrame implements ActionListener {
         arqSecretName.setBounds(140, 170, 300, 220);
     	arqOwner.setBounds(280, 170, 300, 220);
     	arqGroup.setBounds(350, 170, 300, 220);
+    	closeButton.setBounds(170, 300, 100, 30);
     	
-    	c.add(arqCod);
-		c.add(arqSecretName);
-		c.add(arqOwner);
-		c.add(arqGroup);
+    	
+    	closeButton.addActionListener(this);
+    	c.add(closeButton);
         
 		c.add(arqLabel);
 		c.add(arqPath);
@@ -217,10 +218,6 @@ public class FileScreen extends JFrame implements ActionListener {
     }
 
 	public void printData(String[][] filesContent) {
-		c.add(arqCod);
-		c.add(arqSecretName);
-		c.add(arqOwner);
-		c.add(arqGroup);
 
 		  String column[]={"COD.","NOME_SECRETO","DONO", "GRUPO"};         
 		  JTable jt=new JTable(filesContent,column);    
@@ -234,6 +231,12 @@ public class FileScreen extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == closeButton) {
+        	dispose();
+        	String userEmail = AuthenticationService.getInstance().getUser().getEmail();
+        	new UserFrame();
+        }
+		
 		if (e.getSource() == browse) {
 		    int returnValue = fc.showOpenDialog(null);
 		    if (returnValue == JFileChooser.APPROVE_OPTION) 

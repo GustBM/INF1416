@@ -132,6 +132,18 @@ public class UserFrame extends JFrame implements ActionListener {
 			dispose();
 			new NewUserForm();
 		}
+		
+		if (e.getSource() == optionButton2) {
+			dbConnect.register(5003, user.getEmail(), "");
+			JOptionPane.showMessageDialog(this, "Alteracao nao implementada.");
+		}
+		
+		if (e.getSource() == optionButton3) {
+			dbConnect.register(5004, user.getEmail(), "");
+			dispose();
+			new FileScreen();
+		}
+		
 		if (e.getSource() == optionButton4) {
 			dbConnect.register(5005, user.getEmail(), "");
 			int input = JOptionPane.showConfirmDialog(null, 
