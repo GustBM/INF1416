@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.io.File;
 import java.nio.file.Files;
+import java.math.BigInteger;
+import java.util.Date;
+import javax.security.auth.x500.X500Principal;
 
 import javax.swing.*;
 
 import service.AuthenticationService;
 import service.CertificateUtility;
 import service.dbConnect;
-
-import model.User;
 
 public class NewUserForm extends JFrame implements ActionListener {
 	
@@ -48,6 +49,13 @@ public class NewUserForm extends JFrame implements ActionListener {
     public byte[] certificate_content_bytes;
     public String email_certificate;
     public String name_certificate;
+    public int version_certificate;
+    public String certificate_path;
+    public BigInteger serial_certificate;
+    public Date validity_certificate;
+    public String signature_certificate;
+    public X500Principal issuer_certificate;
+    public X500Principal subject_certificate;
 
  	private JLabel tuserName 			= new JLabel("Nome: ");
  	private JLabel tuserGroup 			= new JLabel("Grupo: ");
@@ -303,7 +311,8 @@ public class NewUserForm extends JFrame implements ActionListener {
 //				return;
 //			}
         	
-        	new NewUserFormConfirm(name_certificate, email_certificate, group, pwdText, certificate_content_bytes);
+        	dispose();
+        	new NewUserFormConfirm(name_certificate, email_certificate, group, pwdText, certificate_content_bytes, certificate_path, version_certificate, serial_certificate, validity_certificate, signature_certificate, issuer_certificate, subject_certificate);
 			
 //			if(result) {
 //				// JOptionPane.showMessageDialog(this, "Novo Usuario Cadastrado com Sucesso.");
@@ -328,6 +337,7 @@ public class NewUserForm extends JFrame implements ActionListener {
 			    try {
 			    	certificate_content_text = new String(Files.readAllBytes(selectedFile.toPath()));
 			    	certificate_content_bytes = Files.readAllBytes(selectedFile.toPath());
+			    	certificate_path = selectedFile.getName();
 			    	JOptionPane.showMessageDialog(this, certificate_content_text);
 			    } catch (Exception ex) {
 			    	JOptionPane.showMessageDialog(this, "Erro! " + ex.getMessage());
@@ -337,6 +347,13 @@ public class NewUserForm extends JFrame implements ActionListener {
 			    try {
 		            email_certificate = CertificateUtility.getCertificateEMAILADDRESS(certificate_content_bytes);
 		            name_certificate = CertificateUtility.getCertificateNAME(certificate_content_bytes);
+		            version_certificate = CertificateUtility.getCertificateVERSION(certificate_content_bytes);
+		            serial_certificate = CertificateUtility.getCertificateSERIALNUMBER(certificate_content_bytes);
+		            validity_certificate = CertificateUtility.getCertificateVALIDITY(certificate_content_bytes);
+		            signature_certificate = CertificateUtility.getCertificateSIGNATURE(certificate_content_bytes);
+		            issuer_certificate = CertificateUtility.getCertificateISSUER(certificate_content_bytes);
+		            subject_certificate = CertificateUtility.getCertificateSUBJECT(certificate_content_bytes);
+		            
 		            // JOptionPane.showMessageDialog(this, email_certificate);
 		            // JOptionPane.showMessageDialog(this, name_certificate);
 		            

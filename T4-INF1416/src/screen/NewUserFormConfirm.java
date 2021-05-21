@@ -3,12 +3,13 @@ package screen;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.List;
 //import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.File;
 import java.nio.file.Files;
+import java.math.BigInteger;
+import java.util.Date;
+import javax.security.auth.x500.X500Principal;
 
 import javax.swing.*;
 
@@ -16,7 +17,6 @@ import service.AuthenticationService;
 import service.CertificateUtility;
 import service.dbConnect;
 
-import model.User;
 
 public class NewUserFormConfirm extends JFrame implements ActionListener {
 	
@@ -26,19 +26,8 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	// Components of the Form
     private Container c;
-    private JLabel title 			= new JLabel("Formulario de Cadastro:");
-    //private JLabel name  			= new JLabel("Nome");
-    //private JLabel email 			= new JLabel("Email");
-    private JLabel certificate 		= new JLabel("Certificado:");
-    private JLabel senha 			= new JLabel("Senha pessoal:");
-//  private JTextField tname 		= new JTextField();
-//  private JTextField temail 		= new JTextField();
-    private JPasswordField tsenha 	= new JPasswordField();
 
-    private JLabel grupo;
     private JRadioButton adm;
-    private JRadioButton nml;
-    private ButtonGroup gengp;
     private JButton sub;
     private JButton bck;
     private JButton browse;
@@ -49,18 +38,35 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
     public String email_certificate;
     public String name_certificate;
 
- 	private JLabel tuserName 			= new JLabel("Nome: ");
- 	private JLabel tuserGroup 			= new JLabel("Grupo: ");
- 	private JLabel tuserLogin 			= new JLabel("Login: ");
- 	private JLabel userName 			= new JLabel("");
- 	private JLabel userGroup 			= new JLabel("");
- 	private JLabel userLogin 			= new JLabel("");
- 	private JLabel usersTotalLabel 		= new JLabel("Total de Usuarios: ");
- 	private JLabel usersTotal  			= new JLabel("");
+    // Dados do formulario
+    private JLabel nameLabel	 		= new JLabel("Nome: ");
+ 	private JLabel name  				= new JLabel("");
+ 	private JLabel emailLabel 			= new JLabel("Email:");
+ 	private JLabel email 				= new JLabel("");
+ 	private JLabel certificateLabel 	= new JLabel("Certificado:");
+ 	private JLabel certificate 			= new JLabel("");
+ 	private JLabel grupoLabel			= new JLabel("Grupo:");
+ 	private JLabel grupo 				= new JLabel("");
+ 	private JLabel senha 				= new JLabel("Senha pessoal:");
+    private JPasswordField tsenha 		= new JPasswordField();
     
-    private JButton[] pwdButton = new JButton[18];
+    // Dados do certificado digital
+    private JLabel versionLabel	 		= new JLabel("Versao: ");
+ 	private JLabel version  			= new JLabel("");
+ 	private JLabel serialLabel 			= new JLabel("Serie:");
+ 	private JLabel serial 				= new JLabel("");
+ 	private JLabel validityLabel	 	= new JLabel("Validade:");
+ 	private JLabel validity 			= new JLabel("");
+ 	private JLabel signatureLabel		= new JLabel("Tipo de Assinatura:");
+ 	private JLabel signature 			= new JLabel("");
+ 	private JLabel issuerLabel 			= new JLabel("Emissor:");
+    private JLabel issuer 				= new JLabel("");
+    private JLabel subjectLabel 		= new JLabel("Sujeito:");
+    private JLabel subject 				= new JLabel("");
+    private JLabel emailAddressLabel	= new JLabel("Email:");
+    private JLabel emailAddress 		= new JLabel("");
 	
-	public NewUserFormConfirm(String name_certificate, String email_certificate, int group, String pwdText, byte[] certificate_content_bytes) {
+	public NewUserFormConfirm(String name_certificate, String email_certificate, int group, String pwdText, byte[] certificate_content_bytes,  String certificate_path, int version_certificate, BigInteger serial_certificate, Date validity_certificate, String signature_certificate, X500Principal issuer_certificate, X500Principal subject_certificate) {
 		dbConnect.register(6001, AuthenticationService.getInstance().getUser().getEmail(), "");
 		setTitle("Novo Usuario");
     	setVisible(true);
@@ -71,96 +77,166 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
     	c = getContentPane();
         c.setLayout(null);
         
-        setCorpo1();
+        setCorpo1(name_certificate, email_certificate, certificate_path, group, pwdText);
         
-        setCorpo2();
+        setCorpo2(version_certificate, serial_certificate, validity_certificate, signature_certificate, issuer_certificate, subject_certificate, email_certificate);
+        
+        setRodape();
 
         setVisible(true);
 	}
 
-	private void setCorpo1() {
+	private void setCorpo1(String name_certificate, String email_certificate, String certificate_path, int group, String pwdText) {
 		
-		// Total de usuarios
-		usersTotalLabel.setSize(300, 30);
-		usersTotalLabel.setLocation(100, 105);
+		// Nome
+		nameLabel.setSize(300, 30);
+		nameLabel.setLocation(100, 105);
 		
-		usersTotal.setSize(300, 30);
-		usersTotal.setLocation(220, 105);
-		usersTotal.setText(""+dbConnect.getNumberOfUsers());
+		name.setSize(300, 30);
+		name.setLocation(148, 105);
+		name.setText(name_certificate);
         
-		c.add(usersTotalLabel);
-		c.add(usersTotal);
-	}
-	
-	private void setCorpo2() {
-//      // Nome
-//      name.setSize(100, 20);
-//      name.setLocation(100, 100);
-//      c.add(name);
-//        
-//      tname.setSize(190, 20);
-//      tname.setLocation(200, 100);
-//      c.add(tname);
-//        
-//      // Email
-//      email.setSize(100, 20);
-//      email.setLocation(100, 150);
-//      c.add(email);
-//        
-//      temail.setSize(190, 20);
-//      temail.setLocation(200, 150);
-//      c.add(temail);
+		c.add(nameLabel);
+		c.add(name);
 		
-		// Titulo
-		title.setSize(300, 30);
-        title.setLocation(100, 140);
-        c.add(title);
+		// Email
+		emailLabel.setSize(300, 30);
+		emailLabel.setLocation(100, 135);
+		
+		email.setSize(300, 30);
+		email.setLocation(145, 135);
+		email.setText(email_certificate);
         
-        // Certificado   
-        certificate.setSize(100, 20);
-        certificate.setLocation(100, 190);
-        c.add(certificate);
+		c.add(emailLabel);
+		c.add(email);
+		
+		// Certificado
+		certificateLabel.setSize(300, 30);
+		certificateLabel.setLocation(100, 165);
+		
+		certificate.setSize(300, 30);
+		certificate.setLocation(180, 165);
+		certificate.setText(certificate_path);
         
-        browse = new JButton("Procurar...");
-        browse.setSize(190, 20);
-        browse.setLocation(200, 190);
-        browse.addActionListener(this);
-        c.add(browse);
+		c.add(certificateLabel);
+		c.add(certificate);
+		
+		// Grupo
+        grupoLabel.setSize(300, 30);
+        grupoLabel.setLocation(100, 195);
         
-        // Grupo
-        grupo = new JLabel("Grupo:");
-        grupo.setSize(100, 20);
-        grupo.setLocation(100, 240);
+        grupo.setSize(300, 30);
+        grupo.setLocation(150, 195);
+        if (group == 1) {
+        	grupo.setText("Administrador");
+        }
+        else if (group == 0) {
+        	grupo.setText("Usuário");
+        }
+        
+        c.add(grupoLabel);
         c.add(grupo);
-  
-        adm = new JRadioButton("Administrador");
-        adm.setSelected(false);
-        adm.setSize(120, 20);
-        adm.setLocation(200, 240);
-        c.add(adm);
-  
-        nml = new JRadioButton("Normal");
-        nml.setSelected(true);
-        nml.setSize(100, 20);
-        nml.setLocation(320, 240);
-        c.add(nml);
-  
-        gengp = new ButtonGroup();
-        gengp.add(adm);
-        gengp.add(nml);
         
         // Senha
-        senha.setSize(100, 20);
-        senha.setLocation(100, 290);
+        senha.setSize(300, 30);
+        senha.setLocation(100, 225);
         c.add(senha);
         
-        tsenha.setSize(200, 20);
-        tsenha.setLocation(200, 290);
+        tsenha.setSize(200, 30);
+        tsenha.setLocation(195, 225);
         tsenha.setEditable(false);
+        if (pwdText.length()>0) {
+        	tsenha.setText("Senha");
+        }
         c.add(tsenha);
+		
+	}
+	
+private void setCorpo2(int version_certificate, BigInteger serial_certificate, Date validity_certificate, String signature_certificate, X500Principal issuer_certificate, X500Principal subject_certificate, String email_certificate) {
+		
+		// Versao
+		versionLabel.setSize(300, 30);
+		versionLabel.setLocation(100, 285);
+		
+		version.setSize(300, 30);
+		version.setLocation(154, 285);
+		version.setText(""+version_certificate);
+        
+		c.add(versionLabel);
+		c.add(version);
+		
+		// Serie
+		serialLabel.setSize(300, 30);
+		serialLabel.setLocation(100, 315);
+		
+		serial.setSize(300, 30);
+		serial.setLocation(140, 315);
+		serial.setText(""+serial_certificate);
+        
+		c.add(serialLabel);
+		c.add(serial);
+		
+		// Validade
+		validityLabel.setSize(300, 30);
+		validityLabel.setLocation(100, 345);
+		
+		validity.setSize(300, 30);
+		validity.setLocation(165, 345);
+		validity.setText(""+validity_certificate);
+        
+		c.add(validityLabel);
+		c.add(validity);
+		
+		// Tipo de Assinatura
+        signatureLabel.setSize(300, 30);
+        signatureLabel.setLocation(100, 375);
+        
+        signature.setSize(300, 30);
+        signature.setLocation(228, 375);
+        signature.setText(signature_certificate);
+        
+        c.add(signatureLabel);
+        c.add(signature);
+        
+        // Emissor
+        issuerLabel.setSize(300, 30);
+        issuerLabel.setLocation(100, 405);
+        
+        issuer.setSize(200, 30);
+        issuer.setLocation(162, 405);
+        issuer.setText(""+issuer_certificate);
+        
+        c.add(issuerLabel);
+        c.add(issuer);
+        
+        // Sujeito (FN)
+        subjectLabel.setSize(300, 30);
+        subjectLabel.setLocation(100, 435);
+        
+        subject.setSize(200, 30);
+        subject.setLocation(155, 435);
+        subject.setText(""+subject_certificate);
+        
+        c.add(subjectLabel);
+        c.add(subject);
+        
+        // Email
+        emailAddressLabel.setSize(300, 30);
+        emailAddressLabel.setLocation(100, 465);
+        
+        emailAddress.setSize(200, 30);
+        emailAddress.setLocation(145, 465);
+        emailAddress.setText(email_certificate);
+        
+        c.add(emailAddressLabel);
+        c.add(emailAddress);
+		
+	}
+	
+	private void setRodape() {
         
         // Submit
-        sub = new JButton("Cadastrar");
+        sub = new JButton("Confirmar");
         sub.setSize(100, 20);
         sub.setLocation(130, 540);
         sub.addActionListener(this);
@@ -183,18 +259,6 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		if(e.getSource() == pwdButton[0] || e.getSource() == pwdButton[1] || e.getSource() == pwdButton[2] || e.getSource() == pwdButton[3] || e.getSource() == pwdButton[4] || e.getSource() == pwdButton[5] || 
-		   e.getSource() == pwdButton[6] || e.getSource() == pwdButton[7] || e.getSource() == pwdButton[8] || e.getSource() == pwdButton[9] || e.getSource() == pwdButton[10] || e.getSource() == pwdButton[11] || 
-		   e.getSource() == pwdButton[12] || e.getSource() == pwdButton[13] || e.getSource() == pwdButton[14] || e.getSource() == pwdButton[15] || e.getSource() == pwdButton[16] || e.getSource() == pwdButton[17]
-		) {
-			JButton bt = (JButton) e.getSource();
-        	String st = String.valueOf(tsenha.getPassword());
-        	if(st.length() > 12) return;
-        	String buttonText = bt.getText();
-        	tsenha.setText(st+buttonText);
-        	System.out.println(String.valueOf(tsenha.getPassword()));
-		}
-		
 		if (e.getSource() == bck) {
 			dispose();
 			new UserFrame();
@@ -202,18 +266,11 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
 		
 		if (e.getSource() == sub) {
 			dbConnect.register(6002, AuthenticationService.getInstance().getUser().getEmail(), "");
-//			String nomeText = tname.getText();
-//			String emailText = temail.getText();
 			String pwdText = String.valueOf(tsenha.getPassword());
 			int group = 0;
 			boolean result = false;
 			
 			if(adm.isSelected()) group = 1;
-			
-//			if(nomeText.isEmpty() || emailText.isEmpty() || pwdText.isEmpty()) {
-//            	JOptionPane.showMessageDialog(this, "Preencha todos os Campos!");
-//            	return;
-//            }
 			
 			if(pwdText.isEmpty() || certificate_content_text.isEmpty()) {
             	JOptionPane.showMessageDialog(this, "Preencha todos os Campos!");
@@ -225,18 +282,6 @@ public class NewUserFormConfirm extends JFrame implements ActionListener {
         		dbConnect.register(6003, AuthenticationService.getInstance().getUser().getEmail(), "");
         		return;
         	}
-			
-//			if(!regexEmail(emailText)) {
-//            	JOptionPane.showMessageDialog(this, "Formato de e-mail invalido.");
-//            	return;
-//            }
-			
-//        	try {
-//				result = dbConnect.newUser(nomeText, emailText, group, pwdText);
-//			}catch(Exception e1) {
-//				JOptionPane.showMessageDialog(this, "Erro! " + e1.getMessage());
-//				return;
-//			}
         	
         	try {
 				result = dbConnect.newUser(name_certificate, email_certificate, group, pwdText, certificate_content_bytes);

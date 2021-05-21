@@ -2,8 +2,10 @@ package service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Date;
 //import java.sql.Date;
 //import java.sql.PreparedStatement;
 //import java.sql.ResultSet;
@@ -14,6 +16,8 @@ import java.security.cert.X509Certificate;
 import java.util.regex.Matcher;
 
 import java.util.regex.Pattern;
+
+import javax.security.auth.x500.X500Principal;
 
 public class CertificateUtility {
 	
@@ -53,6 +57,30 @@ public class CertificateUtility {
 	
 	public static String getCertificateNAME(byte[] certificateBytes) throws Exception {
         return getCertificateNAME(getCertificate(certificateBytes));
+    }
+	
+	public static int getCertificateVERSION(byte[] certificateBytes) throws Exception {
+        return getCertificate(certificateBytes).getVersion();
+    }
+	
+	public static BigInteger getCertificateSERIALNUMBER(byte[] certificateBytes) throws Exception {
+        return getCertificate(certificateBytes).getSerialNumber();
+    }
+	
+	public static Date getCertificateVALIDITY(byte[] certificateBytes) throws Exception {
+        return getCertificate(certificateBytes).getNotAfter();
+    }
+	
+	public static String getCertificateSIGNATURE(byte[] certificateBytes) throws Exception {
+        return getCertificate(certificateBytes).getSigAlgName();
+    }
+	
+	public static X500Principal getCertificateISSUER(byte[] certificateBytes) throws Exception {
+        return getCertificate(certificateBytes).getIssuerX500Principal();
+    }
+	
+	public static X500Principal getCertificateSUBJECT(byte[] certificateBytes) throws Exception {
+        return getCertificate(certificateBytes).getSubjectX500Principal();
     }
 	
 }
