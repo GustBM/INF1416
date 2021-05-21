@@ -80,6 +80,7 @@ public class UserFrame extends JFrame implements ActionListener {
 		
 		userLogin.setText(user.getEmail());
 		userName.setText(user.getName());
+		totalAcess.setText(String.valueOf(user.getTotalAccesses()));
 		
 		if(user.getgroup() == 1) userGroup.setText("Administrador");
 		else userGroup.setText("Usuario Normal");
